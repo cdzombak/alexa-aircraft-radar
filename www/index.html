@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Aircraft Radar skill for Amazon Alexa</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Lato|Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="local.css">
+  </head>
+
+  <body>
+  <div class="container main-page">
+  <div class="row">
+    <div class="col-sm-10 col-sm-push-2">
+      <h1>Aircraft Radar skill for Amazon Alexa</h1>
+      <blockquote class="main-quote">“Alexa, ask Aircraft Radar what’s nearby.”</blockquote>
+
+      <p class="main-p"><strong>Aircraft Radar</strong> uses live <a href="https://en.wikipedia.org/wiki/Automatic_dependent_surveillance_–_broadcast">ADS-B</a>
+        radio signals, collected by volunteers, to tell you what airplanes are around you.</p>
+
+      <p>You can ask it:</p>
+      <ul>
+        <li>“what airplanes are around?”</li>
+        <li>“what jets are overhead?”</li>
+        <li>“what was that?”</li>
+        <li>“are there any helicopters nearby?”</li>
+        <li>“what’s the nearest aircraft?”</li>
+        <li>“are there any military planes around?”</li>
+        <li>…and more!</li>
+      </ul>
+
+      <p>Please consider <a href="https://www.adsbexchange.com/donate/">donating to ADS-B Exchange</a> if you enjoy this skill.</p>
+
+      <h2>Requirements and Setup</h2>
+
+      <p>Click “Enable Skill” on <a href="https://www.amazon.com/dp/B075XC9L9H/">the Aircraft Radar skill page</a>, or ask
+        Alexa to enable the Aircraft Radar skill.</p>
+
+      <p>This skill requires your Echo to have an address assigned to it, and you’ll need to give Aircraft Radar permission in the Alexa app to access your address. (<a href="permission.png" target="_blank">Here’s a screenshot</a>
+        showing that configuration in the Alexa app.)</p>
+
+      <h2>Questions you can ask</h2>
+
+      <p>Generally, you can ask Aircraft Radar for airplanes that are “nearby” or “overhead”. “Nearby” looks for aircraft within
+        40km of you; and “overhead” only looks for aircraft within 15km of you. Aircraft Radar will tell you about the 4 nearest aircraft
+        that match your search.</p>
+
+      <p>You can also ask for just the nearest aircraft — for example, “what’s the nearest airplane” — instead of asking what’s nearby.
+        This will return just one result, and it’ll include more details (like the destination airport and a photo, if Aircraft Radar
+        can find those, and the plane’s registration number.)</p>
+
+      <p>Finally, you can search just for jets, helicopters, or military aircraft. So, instead of asking “what aircraft are nearby,” you
+        might ask “what jets are around” or “what helicopters are overhead.”</p>
+
+      <h2>Data</h2>
+
+      <p>Aircraft data is provided by <a href="http://www.adsbexchange.com">ADS-B Exchange</a>. <strong>You should <a href="https://www.adsbexchange.com/donate/">
+        donate to ADS-B Exchange</a> if you enjoy this skill.</strong></p>
+
+      <p>Be aware that not all airplanes transmit ADS-B data just yet, and not all geographical areas have a volunteer receiving
+        ADS-B transmissions from nearby aircraft. Consider <a href="https://www.adsbexchange.com/how-to-feed/">running your own receiver and
+        feeding the results to ADS-B Exchange</a> if you want to help improve this skill.</p>
+
+      <h2>Open-Source</h2>
+
+      <p>Aircraft Radar and its supporting services are open-source:</p>
+      <ul>
+        <li><a href="https://github.com/cdzombak/alexa-aircraft-radar">alexa-aircraft-radar</a></li>
+        <li><a href="https://github.com/cdzombak/geocode-service">geocode-service</a></li>
+        <li><a href="https://github.com/cdzombak/aircraft-image-service">aircraft-image-service</a></li>
+      </ul>
+
+      <p>Pull requests and bug reports are welcome.</p>
+
+      <h2>Donate</h2>
+
+      <p>I pay out of pocket for a $5/month <a href="https://www.digitalocean.com">DigitalOcean</a> virtual server
+        which provides a critical caching layer for the Aircraft Radar service.</p>
+
+      <p>Please donate as little as you’d like toward that cost via:</p>
+      <ul>
+        <li><a href="https://cash.me/$Dzombak">Square Cash</a></li>
+        <li><a href="https://paypal.me/chrisdzombak">PayPal</a></li>
+      </ul>
+
+      <p>Consider also <a href="https://www.adsbexchange.com/donate/">donating to ADS-B Exchange</a>, the project which
+        makes this skill possible.</p>
+
+      <h2>Feedback</h2>
+
+      <p>Please send feedback via <a href="https://github.com/cdzombak/alexa-aircraft-radar/issues">the bug tracker</a>
+        or via email to <a href="mailto:chris@dzombak.com">chris@dzombak.com</a>.</p>
+
+      <p>(Unfortunately, I may not be able to reply to every email I receive.)</p>
+
+      <div class="footer">
+        <hr />
+        <p class="text-muted">The Aircraft Radar skill is developed and run by <a href="https://www.dzombak.com">Chris Dzombak.</a></p>
+        <p class="text-muted"><a href="/privacy.html">Privacy Policy.</a></p>
+      </div>
+    </div>
+
+    <div class="col-sm-2 col-sm-pull-10">
+      <a href="https://www.amazon.com/dp/B075XC9L9H/"><img src="icon.png" alt="Aircraft Radar Icon" class="img-responsive main-icon" /></a>
+    </div>
+  </div> <!-- /row -->
+  </div> <!-- /container -->
+
+  <script type="text/javascript">
+    var _gauges = _gauges || [];
+    (function() {
+      var t   = document.createElement('script');
+      t.type  = 'text/javascript';
+      t.async = true;
+      t.id    = 'gauges-tracker';
+      t.setAttribute('data-site-id', '59c9bf38bad3a76a9212f3b4');
+      t.setAttribute('data-track-path', 'https://track.gaug.es/track.gif');
+      t.src = 'https://d36ee2fcip1434.cloudfront.net/track.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(t, s);
+    })();
+  </script>
+
+  </body>
+</html>

@@ -1,0 +1,47 @@
+{
+  "session": {
+    "new": false,
+    "sessionId": "SessionId.1",
+    "application": {
+      "applicationId": "amzn1.ask.skill.aec65dec-e9f5-453e-934e-eb5e53c5de6e"
+    },
+    "attributes": {},
+    "user": {
+      "userId": "amzn1.ask.account.cdzombak"
+    }
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "EdwRequestId.1",
+    "intent": {
+      "name": "Overhead_Helicopters",
+      "slots": {}
+    },
+    "locale": "en-US",
+    "timestamp": "2017-09-14T03:12:24Z"
+  },
+  "context": {
+    "AudioPlayer": {
+      "playerActivity": "IDLE"
+    },
+    "System": {
+      "application": {
+        "applicationId": "amzn1.ask.skill.aec65dec-e9f5-453e-934e-eb5e53c5de6e"
+      },
+      "user": {
+        "userId": "amzn1.ask.account.cdzombak",
+        "permissions": {
+          "consentToken": "Atza|yes"
+        }
+      },
+      "device": {
+        "deviceId": "amzn1.ask.device.cdzombak-1",
+        "supportedInterfaces": {
+          "AudioPlayer": {}
+        }
+      },
+      "apiEndpoint": "https://api.amazonalexa.com"
+    }
+  },
+  "version": "1.0"
+}

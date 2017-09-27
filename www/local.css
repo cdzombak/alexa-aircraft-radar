@@ -1,0 +1,44 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.main-page {
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  font-size: 1.3em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Lato', sans-serif;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: #333;
+}
+
+h1, h2 {
+  margin-top: 30px;
+}
+
+p {
+  margin-top: 18px;
+}
+
+.main-icon {
+  margin-top: 40px;
+}
+
+.main-quote {
+  background-color: #fafafa;
+  font-style: italic;
+  font-size: 1.1em;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.footer {
+  margin-top: 70px;
+  margin-bottom: 70px;
+  font-size: 0.8em;
+}

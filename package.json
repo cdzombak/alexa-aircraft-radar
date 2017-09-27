@@ -1,0 +1,52 @@
+{
+  "name": "alexa-aircraft-radar",
+  "version": "0.0.1",
+  "description": "ADS-B Exchange skill for Amazon Alexa",
+  "main": "index.js",
+  "contributors": [
+    {
+      "name": "Chris Dzombak",
+      "email": "chris@dzombak.com"
+    }
+  ],
+  "dependencies": {
+    "alexa-sdk": "^1.0.14",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "scripts/package.sh",
+    "deploy": "npm run package && scripts/deploy.sh",
+    "mock-nearest-aircraft": "scripts/mock-event.sh Nearest_Aircraft",
+    "mock-nearby-aircraft": "scripts/mock-event.sh Nearby_Aircraft",
+    "mock-overhead-aircraft": "scripts/mock-event.sh Overhead_Aircraft",
+    "mock-nearest-overhead-aircraft": "scripts/mock-event.sh Nearest_Overhead_Aircraft",
+    "mock-nearest-helicopter": "scripts/mock-event.sh Nearest_Helicopter",
+    "mock-nearest-jet": "scripts/mock-event.sh Nearest_Jet",
+    "mock-overhead-helicopters": "scripts/mock-event.sh Overhead_Helicopters",
+    "mock-nearby-helicopters": "scripts/mock-event.sh Nearby_Helicopters",
+    "mock-overhead-jets": "scripts/mock-event.sh Overhead_Jets",
+    "mock-nearby-jets": "scripts/mock-event.sh Nearby_Jets",
+    "mock-overhead-military": "scripts/mock-event.sh Overhead_Military",
+    "mock-nearby-military": "scripts/mock-event.sh Nearby_Military"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cdzombak/alexa-aircraft-radar.git"
+  },
+  "keywords": [
+    "Alexa",
+    "skill",
+    "ADS-B",
+    "aircraft",
+    "radar"
+  ],
+  "author": "Chris Dzombak",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/cdzombak/alexa-aircraft-radar/issues"
+  },
+  "homepage": "https://github.com/cdzombak/alexa-aircraft-radar#readme"
+}
