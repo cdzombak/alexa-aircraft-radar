@@ -4,6 +4,7 @@ The **Aircraft Radar** skill for Amazon Alexa uses live [ADS-B](https://en.wikip
 
 This top-level README covers technical topics relevant to development of the skill codebase.
 
+* To install the skill, see [Aircraft Radar skill on Amazon](https://www.amazon.com/dp/B075XC9L9H/).
 * For a general introduction to the skill, read [the skill website](https://www.radarskill.dzombak.com).
 * For voice UI design and usage, read [skill/README](skill/README.md).
 

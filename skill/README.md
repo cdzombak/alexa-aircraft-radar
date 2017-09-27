@@ -2,6 +2,7 @@
 
 Voice UI design and documentation for the Aircraft Radar Alexa skill.
 
+* To install the skill, see [Aircraft Radar skill on Amazon](https://www.amazon.com/dp/B075XC9L9H/).
 * For a general introduction to the skill, read [the skill website](https://www.radarskill.dzombak.com).
 
 ## Nearby vs Overhead Queries
