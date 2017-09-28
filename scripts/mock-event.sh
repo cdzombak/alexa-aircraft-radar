@@ -11,4 +11,13 @@ if ! type lambda-local > /dev/null; then
     exit 1
 fi
 
-lambda-local -l index.js -h handler -t 12 -e mock-events/$1.json -E "{\"MOCK_LOCATION\": \"true\"}"
+if [ "$2" == "--valid-location" ]; then
+    LOC="valid"
+elif [ "$2" == "--invalid-location" ]; then
+    LOC="invalid"
+else
+    echo -e "${RED}[Error]${NC} pass ${ORANGE}--[in]valid-location${NC}.\n"
+    exit 2
+fi
+
+lambda-local -l index.js -h handler -t 12 -e "mock-events/$1.json" -E "{\"MOCK_LOCATION\": \"$LOC\"}"

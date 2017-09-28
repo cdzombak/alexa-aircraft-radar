@@ -246,6 +246,12 @@ class SentLocationError extends Error {}
 class SentPermissionsCardError extends Error {}
 class SentNoAddressMessageError extends Error {}
 
+class GeocodeError extends Error {
+  ssmlMessage() {
+    return "Sorry, I couldn't pinpoint your location. Please verify that this Echo's address is correct, then try again."
+  }
+}
+
 function getDeviceLocation(ctx) {
   const permissions = ctx.event.context.System.user.permissions
   const consentToken = permissions ? permissions.consentToken : null;
@@ -261,13 +267,12 @@ function getDeviceLocation(ctx) {
   var address;
 
   if (process.env.MOCK_LOCATION) {
-    address = Promise.resolve ({
-      'addressLine1': "118 S. Main St",
-      'city': "Ann Arbor",
-      'stateOrRegion': "Michigan",
-      'postalCode': "48104",
-      'countryCode': "US"
-    })
+    const MockLocation = require('./mock-locations')
+    if (process.env.MOCK_LOCATION == 'invalid') {
+      address = Promise.resolve (MockLocation.INVALID_LOCATION)
+    } else {
+      address = Promise.resolve (MockLocation.VALID_LOCATION)
+    }
   } else {
     const deviceId = ctx.event.context.System.device.deviceId;
     const apiEndpoint = ctx.event.context.System.apiEndpoint;
@@ -366,7 +371,15 @@ const TypeFilter = {
 function queryHandler(ctx, mode, position, typeFilter, title) {
   console.log("[Query Handler] Handling query for mode", mode, "; position", position, "; type filter", typeFilter)
 
-  const location = getDeviceLocation(ctx)
+  const location = getDeviceLocation(ctx).then((location) => {
+    // really the GeocodeService API should reject this promise; and the remote API should return a different HTTP code and error in JSON
+    if (!location.location) {
+      return Promise.reject(new GeocodeError());
+    } else {
+      return location
+    }
+  })
+
   const acList = location.then((location) => {
     var opts = {
       'radius': Position.searchRadius(position)
@@ -415,8 +428,12 @@ function queryHandler(ctx, mode, position, typeFilter, title) {
       return
     }
 
-    console.log('[Query Handler] Unhandled error in promise chain:', err)
-    ctx.response.speak(ERROR_MESSAGE);
+    if (err.ssmlMessage) {
+      ctx.response.speak(err.ssmlMessage());
+    } else {
+      console.log('[Query Handler] Unhandled error in promise chain:', err)
+      ctx.response.speak(ERROR_MESSAGE);
+    }
     ctx.emit(':responseReady');
   });
 }
