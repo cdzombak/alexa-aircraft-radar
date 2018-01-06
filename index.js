@@ -115,6 +115,14 @@ function ssmlFromModel(modelStr) {
   modelStr = modelStr.replace(/ g600/i, ' <say-as interpret-as="characters">G</say-as> six hundred ')
   modelStr = modelStr.replace(/ g650/i, ' <say-as interpret-as="characters">G</say-as> six fifty ')
 
+  modelStr = modelStr.replace(/embraer 110/i, ' Embraer one ten ')
+  modelStr = modelStr.replace(/embraer 120/i, ' Embraer one twenty ')
+  modelStr = modelStr.replace(/embraer 170/i, ' Embraer one seventy ')
+  modelStr = modelStr.replace(/embraer 175/i, ' Embraer one seventy five')
+  modelStr = modelStr.replace(/embraer 190/i, ' Embraer one ninety ')
+  modelStr = modelStr.replace(/embraer 195/i, ' Embraer one ninety five')
+  modelStr = modelStr.replace(/-E2\b/, ' <say-as interpret-as="characters">E2</say-as>')
+
   return modelStr
 }
 
