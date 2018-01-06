@@ -95,6 +95,26 @@ function ssmlFromModel(modelStr) {
     modelStr = modelStr.replace('787', 'seven eighty-seven')
     modelStr = modelStr.replace('797', 'seven ninety-seven')
 
+    modelStr = modelStr.replace(/gulfstream g-?i\b/i, 'gulfstream <say-as interpret-as="characters">G1</say-as>')
+    modelStr = modelStr.replace(/gulfstream g-?ii\b/i, 'gulfstream <say-as interpret-as="characters">G2</say-as>')
+    modelStr = modelStr.replace(/gulfstream g-?iii\b/i, 'gulfstream <say-as interpret-as="characters">G3</say-as>')
+    modelStr = modelStr.replace(/gulfstream g-?iv\b/i, 'gulfstream <say-as interpret-as="characters">G4</say-as>')
+    modelStr = modelStr.replace(/gulfstream g-?v\b/i, 'gulfstream <say-as interpret-as="characters">G5</say-as>')
+    modelStr = modelStr.replace(/gulfstream g-?vi\b/i, 'gulfstream <say-as interpret-as="characters">G6</say-as>')
+
+    modelStr = modelStr.replace(/ g100/i, ' <say-as interpret-as="characters">G</say-as> one hundred ')
+    modelStr = modelStr.replace(/ g150/i, ' <say-as interpret-as="characters">G</say-as> one fifty ')
+    modelStr = modelStr.replace(/ g200/i, ' <say-as interpret-as="characters">G</say-as> two hundred ')
+    modelStr = modelStr.replace(/ g280/i, ' <say-as interpret-as="characters">G</say-as> two eighty ')
+    modelStr = modelStr.replace(/ g300/i, ' <say-as interpret-as="characters">G</say-as> three hundred ')
+    modelStr = modelStr.replace(/ g350/i, ' <say-as interpret-as="characters">G</say-as> three fifty ')
+    modelStr = modelStr.replace(/ g400/i, ' <say-as interpret-as="characters">G</say-as> four hundred ')
+    modelStr = modelStr.replace(/ g450/i, ' <say-as interpret-as="characters">G</say-as> four fifty ')
+    modelStr = modelStr.replace(/ g500/i, ' <say-as interpret-as="characters">G</say-as> five hundred ')
+    modelStr = modelStr.replace(/ g550/i, ' <say-as interpret-as="characters">G</say-as> five fifty ')
+    modelStr = modelStr.replace(/ g600/i, ' <say-as interpret-as="characters">G</say-as> six hundred ')
+    modelStr = modelStr.replace(/ g650/i, ' <say-as interpret-as="characters">G</say-as> six fifty ')
+
     return modelStr
 }
 
