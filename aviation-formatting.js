@@ -64,7 +64,7 @@ exports.icaoChar = function(ch) {
     case "z": return "ZULU"
     case "1": return "ONE"
     case "2": return "TWO"
-    case "3": return "THREE"
+    case "3": return "TREE"
     case "4": return "FOUR"
     case "5": return "FIVE"
     case "6": return "SIX"
