@@ -45,7 +45,7 @@ exports.icaoChar = function(ch) {
     case "g": return "GOLF"
     case "h": return "HOTEL"
     case "i": return "INDIA"
-    case "j": return "JULIET"
+    case "j": return "JULIETTE"
     case "k": return "KILO"
     case "l": return "<phoneme alphabet=\"ipa\" ph=\"l'imə\">lima</phoneme>"
     case "m": return "MIKE"
