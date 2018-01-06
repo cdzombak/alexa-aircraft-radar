@@ -40,6 +40,7 @@ function appendModelFromAircraft(response, ac, addMilitaryDesc) {
   modelStr = modelStr.replace(/^[0-9][0-9][0-9][0-9]/, '')
 
   modelStr = modelStr.replace(/aircraft company/i, '')
+  modelStr = modelStr.replace(/aircraft co\.?/i, '')
   modelStr = modelStr.replace(/industries/i, '')
   modelStr = modelStr.replace(/industrie/i, '')
   modelStr = modelStr.replace(/aviation/i, '')
