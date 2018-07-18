@@ -17,5 +17,7 @@ realpath() {
 }
 
 realpath products/aircraft-radar.zip | pbcopy
-echo -e "${GREEN}Copied product path to the clipboard.${NC}\n"
+echo -e "${GREEN}Copied product path to the clipboard.${NC}"
+echo -e "${ORANGE}ℹ️  Remember to deploy in all applicable AWS regions.${NC}\n"
 open "https://console.aws.amazon.com/lambda/home?region=us-east-1#/functions/AircraftRadarSkill?tab=code"
+open "https://eu-west-1.console.aws.amazon.com/lambda/home?region=eu-west-1#/functions/AircraftRadarSkill_EUWest?tab=code"
