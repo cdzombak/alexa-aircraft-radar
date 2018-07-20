@@ -214,7 +214,11 @@ function verboseAircraftOutput(response, ac) {
   }
 
   response.append(' ', ': ')
-  response.append(ac.Reg, '<prosody rate="slow">' + AvFormat.icaoStr(ac.Reg) +'</prosody>')
+  if (ac.Reg) {
+    response.append(ac.Reg, '<prosody rate="slow">' + AvFormat.icaoStr(ac.Reg) +'</prosody>')
+  } else {
+    response.append("unknown")
+  }
   response.append('.')
 }
 
