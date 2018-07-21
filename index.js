@@ -476,6 +476,9 @@ const handlers = {
     console.log("Handling LaunchRequest" )
     this.emit('Nearby_Aircraft');
   },
+  'SessionEndedRequest': function() {
+    console.log("Received SessionEndedRequest")
+  },
   'Nearby_Aircraft': function () {
     console.log("Handling Nearby_Aircraft")
     queryHandler(this, Mode.Multi, Position.Nearby, TypeFilter.All, "Nearby Aircraft")
