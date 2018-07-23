@@ -12,4 +12,5 @@ if [[ ! -d node_modules ]]; then
 fi
 
 mkdir -p products
+rm -f products/aircraft-radar.zip
 zip -rq products/aircraft-radar.zip *.js node_modules
