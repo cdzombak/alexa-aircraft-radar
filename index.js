@@ -214,7 +214,8 @@ function verboseAircraftOutput(response, ac) {
   }
 
   response.append(' ', ': ')
-  if (ac.Reg) {
+  console.log("[VERBOSE DEBUG] dealing with aircraft reg:", ac.Reg)
+  if (ac.Reg !== null && ac.Reg !== undefined) {
     response.append(ac.Reg, '<prosody rate="slow">' + AvFormat.icaoStr(ac.Reg) +'</prosody>')
   } else {
     response.append("unknown")

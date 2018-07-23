@@ -79,6 +79,7 @@ exports.icaoChar = function(ch) {
 }
 
 exports.icaoStr = function(str) {
+  str = String(str)
   var result = ""
 
   for (var i = 0, len = str.length; i < len; i++) {
