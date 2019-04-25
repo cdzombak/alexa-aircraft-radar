@@ -32,10 +32,6 @@ Per `package.json`, in production this application requires `alexa-sdk`, `reques
 
 ## Development
 
-### Install lambda-local
-
-I use [lambda-local](https://www.npmjs.com/package/lambda-local) to run requests locally (with a mocked address in downtown Ann Arbor). Install it via `npm install -g lambda-local`.
-
 ### Install dependencies with npm
 
 Install dependencies, including those for development, with `npm install`.
