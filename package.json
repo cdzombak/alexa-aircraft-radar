@@ -35,6 +35,10 @@
     "mock-nearby-military": "scripts/mock-event.sh Nearby_Military --valid-location",
     "mock-invalid-location": "scripts/mock-event.sh Nearby_Aircraft --invalid-location"
   },
+  "engines": {
+    "node": ">=8.0.0",
+    "npm": ">=5.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cdzombak/alexa-aircraft-radar.git"
