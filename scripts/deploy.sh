@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+AWS_PROFILE_NAME=${AWS_PROFILE_NAME:-default}
+
 set -euo pipefail
 
 RED='\033[0;31m'
@@ -12,12 +14,25 @@ if [[ ! -f products/aircraft-radar.zip ]]; then
     exit 1
 fi
 
-realpath() {
-    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
-}
+if ! type aws > /dev/null; then
+    echo -e "${RED}[Error]${NC} missing AWS cli eool. On macOS, install via ${ORANGE}brew install awscli${NC}.\n"
+    exit 1
+fi
 
-realpath products/aircraft-radar.zip | pbcopy
-echo -e "${GREEN}Copied product path to the clipboard.${NC}"
-echo -e "${ORANGE}ℹ️  Remember to deploy in all applicable AWS regions.${NC}\n"
-open "https://console.aws.amazon.com/lambda/home?region=us-east-1#/functions/AircraftRadarSkill?tab=code"
-open "https://eu-west-1.console.aws.amazon.com/lambda/home?region=eu-west-1#/functions/AircraftRadarSkill_EUWest?tab=code"
+aws lambda update-function-code \
+    --region us-east-1 \
+    --profile "$AWS_PROFILE_NAME" \
+    --function-name AircraftRadarSkill \
+    --zip-file fileb://products/aircraft-radar.zip \
+    --output table --no-paginate
+
+echo ""
+
+aws lambda update-function-code \
+    --region eu-west-1 \
+    --profile "$AWS_PROFILE_NAME" \
+    --function-name AircraftRadarSkill_EUWest \
+    --zip-file fileb://products/aircraft-radar.zip \
+    --output table --no-paginate
+
+echo ""
