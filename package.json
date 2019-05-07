@@ -11,8 +11,8 @@
   ],
   "dependencies": {
     "alexa-sdk": "^1.0.14",
-    "request": "^2.81.0",
-    "request-promise": "^4.2.1"
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
   },
   "devDependencies": {
     "lambda-local": "^1.6.1"
