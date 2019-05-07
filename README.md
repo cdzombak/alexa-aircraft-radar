@@ -38,9 +38,7 @@ Install dependencies, including those for development, with `npm install`.
 
 ### Set required environment variables in your shell
 
-Once you have an API key for the geocoding service and aircraft image service, run `. ./scripts/env.sh {KEY}` in your shell before running mock requests (see the next step).
-
-(Both APIs currently use the same client API key.)
+Once you have an API key for the geocoding service and aircraft image service, run `source .env.dev` in your shell before running mock requests (see the next step). You can create this file by copying `.env.sample` and filling out the empty values there.
 
 ### Run mock requests with lambda-local
 
@@ -48,7 +46,7 @@ Once you have an API key for the geocoding service and aircraft image service, r
 
 Start by running `npm run mock-nearest-aircraft`, and see `package.json` for the full list.
 
-(You’ll have to run this *after* using `env.sh` to set required environment variables in your shell.)
+(You’ll have to run this *after* setting the required environment variables in your shell.)
 
 ### Generate utterances programmatically
 
@@ -64,8 +62,6 @@ For convenience when developing on macOS, `npm run deploy` will generate the zip
 
 - `GEOCODE_API_KEY` is the client key for my geocoding web service.
 - `IMAGE_API_KEY` is the client key for my aircraft images web service.
-
-To set these in your shell for local dev, run `. ./scripts/env.sh {KEY}`. (Both APIs currently use the same client API key.)
 
 ## Be nice to ADS-B Exchange
 

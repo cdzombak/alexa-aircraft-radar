@@ -2,6 +2,7 @@ tmp/*
 !tmp/vrs-enums.js
 !tmp/initial-brainstorming.md
 
+.env.dev
 products/
 
 # Logs
