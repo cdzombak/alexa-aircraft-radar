@@ -488,14 +488,6 @@ const handlers = {
     console.log("Handling Nearest_Aircraft")
     queryHandler(this, Mode.Single, Position.Nearby, TypeFilter.All, "Nearby Aircraft")
   },
-  'Nearest_Overhead_Aircraft': function () {
-    console.log("Handling Nearest_Overhead_Aircraft")
-    queryHandler(this, Mode.Single, Position.Overhead, TypeFilter.All, "Aircraft Overhead")
-  },
-  'Overhead_Aircraft': function () {
-    console.log("Handling Overhead_Aircraft")
-    queryHandler(this, Mode.Multi, Position.Overhead, TypeFilter.All, "Aircraft Overhead")
-  },
   'Nearest_Jet': function () {
     console.log("Handling Nearest_Jet")
     queryHandler(this, Mode.Single, Position.Nearby, TypeFilter.Jets, "Nearby Jets")
@@ -504,14 +496,6 @@ const handlers = {
     console.log("Handling Nearby_Jets")
     queryHandler(this, Mode.Multi, Position.Nearby, TypeFilter.Jets, "Nearby Jets")
   },
-  'Overhead_Jets': function () {
-    console.log("Handling Overhead_Jets")
-    queryHandler(this, Mode.Multi, Position.Overhead, TypeFilter.Jets, "Jets Overhead")
-  },
-  'Overhead_Helicopters': function () {
-    console.log("Handling Overhead_Helicopters")
-    queryHandler(this, Mode.Multi, Position.Overhead, TypeFilter.Helicopters, "Helicopters Overhead")
-  },
   'Nearby_Helicopters': function () {
     console.log("Handling Nearby_Helicopters")
     queryHandler(this, Mode.Multi, Position.Nearby, TypeFilter.Helicopters, "Nearby Helicopters")
@@ -519,10 +503,6 @@ const handlers = {
   'Nearest_Helicopter': function () {
     console.log("Handling Nearest_Helicopter")
     queryHandler(this, Mode.Single, Position.Nearby, TypeFilter.Helicopters, "Nearby Helicopters")
-  },
-  'Overhead_Military': function () {
-    console.log("Handling Overhead_Military")
-    queryHandler(this, Mode.Multi, Position.Overhead, TypeFilter.Military, "Military Aircraft Overhead")
   },
   'Nearby_Military': function () {
     console.log("Handling Nearby_Military")
