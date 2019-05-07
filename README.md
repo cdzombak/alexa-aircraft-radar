@@ -10,9 +10,9 @@ This top-level README covers technical topics relevant to development of the ski
 
 ## Requirements
 
-### Node v6
+### Node v8
 
-This is a standard Node application which requires Node v6. It might work with newer Node versions, but AWS Lambda uses v6.
+This is a standard Node application which requires Node v8. It might work with newer Node versions, but AWS Lambda uses v8.
 
 ### AWS Lambda
 
