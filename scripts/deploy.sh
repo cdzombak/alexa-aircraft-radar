@@ -15,14 +15,14 @@ if [[ ! -f products/aircraft-radar.zip ]]; then
 fi
 
 if ! type aws > /dev/null; then
-    echo -e "${RED}[Error]${NC} missing AWS cli eool. On macOS, install via ${ORANGE}brew install awscli${NC}.\n"
+    echo -e "${RED}[Error]${NC} missing AWS cli tool. On macOS, install via ${ORANGE}brew install awscli${NC}.\n"
     exit 1
 fi
 
 aws lambda update-function-code \
     --region us-east-1 \
     --profile "$AWS_PROFILE_NAME" \
-    --function-name AircraftRadarSkill \
+    --function-name AircraftRadarSkill-v2 \
     --zip-file fileb://products/aircraft-radar.zip \
     --output table --no-paginate
 
@@ -31,7 +31,7 @@ echo ""
 aws lambda update-function-code \
     --region eu-west-1 \
     --profile "$AWS_PROFILE_NAME" \
-    --function-name AircraftRadarSkill_EUWest \
+    --function-name AircraftRadarSkill-v2 \
     --zip-file fileb://products/aircraft-radar.zip \
     --output table --no-paginate
 
