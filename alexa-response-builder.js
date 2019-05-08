@@ -14,7 +14,7 @@ class AlexaResponseBuilder {
 
   respond(ctx) {
     if (this._needsMore) {
-      this.append(" " + this._needsMore, "<break time=\"1500ms\" />" + this._needsMore);
+      this.append(" " + this._needsMore, " <break time=\"500ms\" />" + this._needsMore);
     }
     this._thumbnailPromise.then((thumbnailURL) => {
       console.log('[AlexaResponseBuilder] Sending title:', this._title)

@@ -251,6 +251,10 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
     return
   }
 
+  if (acList.length == limit + 1) {
+    limit += 1
+  }
+
   response.append(acList.length + ' ')
 
   if (acList.length == 1) {
@@ -262,8 +266,8 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
   }
 
   if (acList.length > limit) {
-    response.append('. Here are the nearest few')
-    response.setNeedsMore("Would you like to hear the rest?")
+    response.append('. The nearest are')
+    response.setNeedsMore("Do you want to hear the rest?")
   }
 
   response.append(': ')
