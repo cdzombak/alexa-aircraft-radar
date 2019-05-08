@@ -280,9 +280,11 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
       return
     }
 
+    const atEnd = (idx == limit-1 || idx == acList.length-1)
+    if (atEnd) {
+      response.append(' and ')
+    }
     appendAircraftDetails(response, ac, addMilitaryDesc)
-
-    const atEnd = (idx == limit-1 || idx == acList.length -1)
     response.append(atEnd ? '.' : '; ')
   });
 
@@ -509,8 +511,11 @@ function queryContinuationHandler(ctx) {
     }
 
     // A [model] from [airport] Z miles A at X feet heading Y; …
-    appendAircraftDetails(response, ac, addMilitaryDesc)
     const atEnd = (idx == limit-1 || idx == acList.length-1)
+    if (atEnd) {
+      response.append(' and ')
+    }
+    appendAircraftDetails(response, ac, addMilitaryDesc)
     response.append(atEnd ? '.' : '; ')
   });
 
