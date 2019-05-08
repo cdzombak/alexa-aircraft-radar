@@ -25,6 +25,7 @@ const NO_ADDRESS = "It looks like you don't have an address set. Please set an a
 const LOCATION_FAILURE = "There was an error finding your location. Please enable Device Address permissions for the Aircraft Radar skill, and set an address for this Echo, in the Amazon Alexa app."
 
 const MAX_NEARBY = 3
+const MAX_CONTINUE = 4
 
 function appendModelFromAircraft(response, ac, addMilitaryDesc) {
   if (!ac.Mdl) {
@@ -267,7 +268,6 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
 
   if (acList.length > limit) {
     response.append('. The nearest are')
-    response.setNeedsMore("Do you want to hear the rest?")
   }
 
   response.append(': ')
@@ -282,7 +282,7 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
 
     appendAircraftDetails(response, ac, addMilitaryDesc)
 
-    const atEnd = idx == limit-1 || idx == acList.length -1
+    const atEnd = (idx == limit-1 || idx == acList.length -1)
     response.append(atEnd ? '.' : '; ')
   });
 
@@ -467,6 +467,7 @@ function queryHandler(ctx, mode, position, typeFilter, title) {
       const leftovers = multiAircraftOutput(response, acList, Position.string(position), typeFilter, MAX_NEARBY, addMilitaryDesc)
 
       if (leftovers && leftovers.length > 0) {
+        response.setNeedsMore("Do you want to hear more?")
         ctx.attributes['addMilitaryDesc'] = addMilitaryDesc
         ctx.attributes['leftovers'] = leftovers
         ctx.attributes['title'] = title
@@ -497,14 +498,28 @@ function queryContinuationHandler(ctx) {
   const title = ctx.attributes['title']
   const response = new Response(title)
 
+  const limit = MAX_CONTINUE
+  var leftovers = []
+
   response.append('There is ')
   acList.forEach(function(ac, idx, list) {
+    if (idx >= limit) {
+      leftovers.push(ac)
+      return
+    }
+
     // A [model] from [airport] Z miles A at X feet heading Y; …
     appendAircraftDetails(response, ac, addMilitaryDesc)
-    const atEnd = (idx == acList.length - 1)
+    const atEnd = (idx == limit-1 || idx == acList.length-1)
     response.append(atEnd ? '.' : '; ')
   });
 
+  ctx.attributes['leftovers'] = leftovers
+  if (leftovers.length > 0 && leftovers.length <= limit) {
+    response.setNeedsMore("Do you want to hear the rest?")
+  } else if (leftovers.length > limit) {
+    response.setNeedsMore("Do you want to hear more?")
+  }
   response.respond(ctx)
 }
 
