@@ -1,6 +1,6 @@
 {
   "session": {
-    "new": false,
+    "new": true,
     "sessionId": "SessionId.1",
     "application": {
       "applicationId": "amzn1.ask.skill.aec65dec-e9f5-453e-934e-eb5e53c5de6e"

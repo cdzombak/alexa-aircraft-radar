@@ -38,14 +38,18 @@ Results are always sorted by distance to the user. Distances are calculated taki
 
 | Implemented? | Intent                    | Behavior                                                                                | Response Format                                                                                                                               |
 | ------------ | ------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| ✓            | `Nearby_Aircraft`         | Search for nearby aircraft and return 4 closest results based on calculated distance.   | N aircraft are nearby. [Here are the first M:] A [model] from [airport] Z miles A at X feet heading Y; …                                      |
+| ✓            | `Nearby_Aircraft`         | Search for nearby aircraft and return 3 closest results based on calculated distance.   | N aircraft are nearby. [Here are the first M:] A [model] from [airport] Z miles A at X feet heading Y; …                                      |
 | ✓            | `Nearest_Aircraft`        | Search for nearby aircraft and calculate distance. Return closest result.               | The nearest aircraft is a [model] Z miles A at X feet heading Y, registration [reg], en route from [airport] to [airport] with [count] stops. |
-| ✓            | `Nearby_Helicopters`      | Search for nearby helicopters (using API filtering). Return 4 closest results.          |                                                                                                                                               |
+| ✓            | `Nearby_Helicopters`      | Search for nearby helicopters (using API filtering). Return 3 closest results.          |                                                                                                                                               |
 | ✓            | `Nearest_Helicopter`      | Search for nearby helicopters (using API filtering). Return closest result.             |                                                                                                                                               |
-| ✓            | `Nearby_Jets`             | Search for nearby jets (using API filtering). Return 4 closest results.                 |                                                                                                                                               |
+| ✓            | `Nearby_Jets`             | Search for nearby jets (using API filtering). Return 3 closest results.                 |                                                                                                                                               |
 | ✓            | `Nearest_Jet`             | Search for nearby jets (using API filtering). Return closest result.                    |                                                                                                                                               |
-| ✓            | `Nearby_Military`         | Search for nearby military aircraft (using API filtering). Return 4 closest results.    |                                                                                                                                               |
+| ✓            | `Nearby_Military`         | Search for nearby military aircraft (using API filtering). Return 3 closest results.    |                                                                                                                                               |
 [Intents and Behavior Specs]
+
+### Handling additional results
+
+When there are more than 3 results, the skill asks the user if they want to hear more. If yes, the remainder of the list is read.
 
 ## Utterances
 

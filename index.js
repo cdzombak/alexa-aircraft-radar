@@ -24,7 +24,7 @@ const NOTIFY_MISSING_PERMISSIONS = "Please enable Device Address permissions for
 const NO_ADDRESS = "It looks like you don't have an address set. Please set an address for this Echo, in the Amazon Alexa app."
 const LOCATION_FAILURE = "There was an error finding your location. Please enable Device Address permissions for the Aircraft Radar skill, and set an address for this Echo, in the Amazon Alexa app."
 
-const MAX_NEARBY = 4
+const MAX_NEARBY = 3
 
 function appendModelFromAircraft(response, ac, addMilitaryDesc) {
   if (!ac.Mdl) {
@@ -169,6 +169,25 @@ function appendAltFromAircraft(response, ac) {
   }
 }
 
+function appendAircraftDetails(response, ac, addMilitaryDesc) {
+  appendModelFromAircraft(response, ac, addMilitaryDesc)
+
+  if (ac.From) {
+    response.append(" from " + fmtAirport(ac.From))
+  }
+
+  response.append(', ')
+  response.append(fmtDistance(ac.cdz_DstMi) + ' miles ' + AvFormat.cardinal(ac.Brng, "away") + ',')
+  response.space()
+  appendAltFromAircraft(response, ac)
+  response.space()
+  response.append('heading ' + AvFormat.cardinal(ac.Trak, null))
+
+  if (ac.Call & !ac.CallSus) {
+    response.append(", with callsign " + ac.Call)
+  }
+}
+
 function singleAircraftOutput(response, ac, position, type) {
   // The nearest aircraft is a [model], Z miles A, at X feet, heading Y,
   // registration [reg], en route from [airport] to [airport] with [count] stops.
@@ -237,43 +256,33 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
   if (acList.length == 1) {
     response.append(TypeFilter.singularString(typeFilter) + ' is ' + position + ': ')
     verboseAircraftOutput(response, acList[0])
-    return
+    return []
   } else {
     response.append(TypeFilter.string(typeFilter) + ' are ' + position)
   }
 
   if (acList.length > limit) {
-    response.append('. Here are the nearest ' + limit)
+    response.append('. Here are the nearest few')
+    response.setNeedsMore("Would you like to hear the rest?")
   }
 
   response.append(': ')
+  var continuationAircraft = []
 
   acList.forEach(function(ac, idx, list) {
     // A [model] from [airport] Z miles A at X feet heading Y; …
     if (idx >= limit) {
+      continuationAircraft.push(ac)
       return
     }
 
-    appendModelFromAircraft(response, ac, addMilitaryDesc)
-
-    if (ac.From) {
-      response.append(" from " + fmtAirport(ac.From))
-    }
-
-    response.append(', ')
-    response.append(fmtDistance(ac.cdz_DstMi) + ' miles ' + AvFormat.cardinal(ac.Brng, "away") + ',')
-    response.space()
-    appendAltFromAircraft(response, ac)
-    response.space()
-    response.append('heading ' + AvFormat.cardinal(ac.Trak, null))
-
-    if (ac.Call & !ac.CallSus) {
-      response.append(", with callsign " + ac.Call)
-    }
+    appendAircraftDetails(response, ac, addMilitaryDesc)
 
     const atEnd = idx == limit-1 || idx == acList.length -1
     response.append(atEnd ? '.' : '; ')
   });
+
+  return continuationAircraft
 }
 
 class SentLocationError extends Error {}
@@ -450,8 +459,14 @@ function queryHandler(ctx, mode, position, typeFilter, title) {
       }
     } else {
       // Mode.Multi
-      const addMilitaryDesc = (typeFilter != TypeFilter.Military)
-      multiAircraftOutput(response, acList, Position.string(position), typeFilter, MAX_NEARBY, addMilitaryDesc)
+      const addMilitaryDesc = (typeFilter != TypeFilter.Military) // describe planes as "military" iff user didn't filter to military planes only
+      const leftovers = multiAircraftOutput(response, acList, Position.string(position), typeFilter, MAX_NEARBY, addMilitaryDesc)
+
+      if (leftovers && leftovers.length > 0) {
+        ctx.attributes['addMilitaryDesc'] = addMilitaryDesc
+        ctx.attributes['leftovers'] = leftovers
+        ctx.attributes['title'] = title
+      }
     }
 
     response.respond(ctx)
@@ -470,6 +485,23 @@ function queryHandler(ctx, mode, position, typeFilter, title) {
     }
     ctx.emit(':responseReady');
   });
+}
+
+function queryContinuationHandler(ctx) {
+  const acList = ctx.attributes['leftovers']
+  const addMilitaryDesc = ctx.attributes['addMilitaryDesc']
+  const title = ctx.attributes['title']
+  const response = new Response(title)
+
+  response.append('There is ')
+  acList.forEach(function(ac, idx, list) {
+    // A [model] from [airport] Z miles A at X feet heading Y; …
+    appendAircraftDetails(response, ac, addMilitaryDesc)
+    const atEnd = (idx == acList.length - 1)
+    response.append(atEnd ? '.' : '; ')
+  });
+
+  response.respond(ctx)
 }
 
 const handlers = {
@@ -508,6 +540,18 @@ const handlers = {
     console.log("Handling Nearby_Military")
     queryHandler(this, Mode.Multi, Position.Nearby, TypeFilter.Military, "Nearby Military Aircraft")
   },
+  'AMAZON.NoIntent': function () {
+    console.log("Handling AMAZON.NoIntent")
+    this.emit(':responseReady');
+  },
+  'AMAZON.YesIntent': function () {
+    console.log("Handling AMAZON.YesIntent")
+    if (this.attributes['leftovers'] && this.attributes['leftovers'].length > 0) {
+      queryContinuationHandler(this)
+    } else {
+      this.emit('Nearby_Aircraft');
+    }
+  },
   'AMAZON.HelpIntent': function () {
     console.log("Handling AMAZON.HelpIntent")
     const speechOutput = HELP_MESSAGE;
@@ -517,12 +561,10 @@ const handlers = {
   },
   'AMAZON.CancelIntent': function () {
     console.log("Handling AMAZON.CancelIntent")
-    this.response.speak(STOP_MESSAGE);
     this.emit(':responseReady');
   },
   'AMAZON.StopIntent': function () {
     console.log("Handling AMAZON.StopIntent")
-    this.response.speak(STOP_MESSAGE);
     this.emit(':responseReady');
   },
 };

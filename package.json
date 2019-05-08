@@ -30,7 +30,9 @@
     "mock-nearby-helicopters": "scripts/mock-event.sh Nearby_Helicopters --valid-location",
     "mock-nearby-jets": "scripts/mock-event.sh Nearby_Jets --valid-location",
     "mock-nearby-military": "scripts/mock-event.sh Nearby_Military --valid-location",
-    "mock-invalid-location": "scripts/mock-event.sh Nearby_Aircraft --invalid-location"
+    "mock-invalid-location": "scripts/mock-event.sh Nearby_Aircraft --invalid-location",
+    "mock-yes-more": "scripts/mock-event.sh Yes_More --valid-location",
+    "mock-no-more": "scripts/mock-event.sh No_More --valid-location"
   },
   "engines": {
     "node": ">=8.0.0",

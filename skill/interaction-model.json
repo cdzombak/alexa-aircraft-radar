@@ -20,6 +20,14 @@
                     "samples": []
                 },
                 {
+                    "name": "AMAZON.YesIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": []
+                },
+                {
                     "name": "Nearby_Aircraft",
                     "slots": [],
                     "samples": [

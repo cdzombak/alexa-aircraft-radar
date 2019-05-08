@@ -1,7 +1,7 @@
 {
   "session": {
-    "new": false,
-    "sessionId": "SessionId.1",
+    "new": true,
+    "sessionId": "SessionId.5",
     "application": {
       "applicationId": "amzn1.ask.skill.aec65dec-e9f5-453e-934e-eb5e53c5de6e"
     },
@@ -12,7 +12,7 @@
   },
   "request": {
     "type": "IntentRequest",
-    "requestId": "EdwRequestId.1",
+    "requestId": "EdwRequestId.5",
     "intent": {
       "name": "Nearest_Aircraft",
       "slots": {}
