@@ -2,7 +2,9 @@
 
 exports.RadiusString = {
   Overhead_KM: '15',
-  Nearby_KM: '40'
+  Nearby_KM: '40',
+  Overhead_NM: '8.1',
+  Nearby_NM: '21.5983'
 }
 
 // Filters to be applied with Array.prototype.filter

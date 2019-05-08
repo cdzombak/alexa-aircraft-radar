@@ -376,7 +376,7 @@ const Position = {
   },
 
   searchRadius: function(position) {
-    return position === Position.Overhead ? SkyView.RadiusString.Overhead_KM : SkyView.RadiusString.Nearby_KM
+    return position === Position.Overhead ? SkyView.RadiusString.Overhead_NM : SkyView.RadiusString.Nearby_NM
   },
 
   filter: function(position) {

@@ -9,16 +9,16 @@ exports.Filter = {
 }
 
 exports.query = function(location, options) {
-  var url = 'http://public-api.adsbexchange.com/VirtualRadar/AircraftList.json?';
-  url += 'lat=' + location['lat'] + '&'
-  url += 'lng=' + location['lng'] + '&'
-  url += 'fDstL=0&fDstU=' + options['radius'] + '&'
+  var url = 'https://adsbexchange.com/api/aircraft/json';
+  url += '/lat/' + location['lat']
+  url += '/lon/' + location['lng']
+  url += '/dist/' + options['radius']
 
-  if (options['helicopter']) url += 'fSpcQ=4&';
-  if (options['jet']) url += 'fEgtQ=3&';
-  if (options['military']) url += 'fMilQ=1&';
-
-  url = url.slice(0, -1); // strip trailing ampersand
+  // TODO(cdzombak): helo, jet filtering
+  // TODO(cdzombak): military (s/all/mil) filtering
+  // if (options['helicopter']) url += 'fSpcQ=4&';
+  // if (options['jet']) url += 'fEgtQ=3&';
+  // if (options['military']) url += 'fMilQ=1&';
 
   const reqOptions = {
     url: url,
@@ -26,7 +26,8 @@ exports.query = function(location, options) {
     headers: {
       'Accept': 'application/json',
       'Accept-Charset': 'utf-8',
-      'User-Agent': 'alexa-aircraft-radar'
+      'User-Agent': 'alexa-aircraft-radar-v2',
+      'api-auth': process.env.ADSBX_API_KEY
     },
     json: 'true'
   };
@@ -34,7 +35,8 @@ exports.query = function(location, options) {
   console.log('[ADSB] Aircraft List query:', url)
 
   return rp(reqOptions).then(function(data) {
-    return data['acList']
+    console.log('[ADSB] Aircraft List response:', data);
+    return data['ac']
   });
 };
 

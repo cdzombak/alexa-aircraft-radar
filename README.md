@@ -62,6 +62,7 @@ For convenience when developing on macOS, `npm run deploy` will generate the zip
 
 - `GEOCODE_API_KEY` is the client key for my geocoding web service.
 - `IMAGE_API_KEY` is the client key for my aircraft images web service.
+- `ADSBX_API_KEY` is the API key for the ADS-B Exchange API.
 
 ## Be nice to ADS-B Exchange
 
