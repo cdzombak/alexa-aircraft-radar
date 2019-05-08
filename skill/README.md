@@ -87,11 +87,15 @@ You can ask it:
 - "are there any military planes around?"
 - ...and more!
 
-If Aircraft Radar only finds one aircraft, it'll give you detailed information including the registration number and a picture (if it can find one). Otherwise, you'll get a list of the closest 4 aircraft that you're asking about.
+If Aircraft Radar only finds one aircraft, it'll give you detailed information including the registration number and a picture (if it can find one). Otherwise, you'll get a list of all the nearby aircraft you've asked about.
 
 This skill requires your Echo to have an address assigned to it, and you'll need to give Aircraft Radar permission in the Alexa app to access your address. This information is used to search for airplanes near your location.
 
 Data is provided by ADS-B Exchange (www.adsbexchange.com). Be aware that not all airplanes transmit location radio signals just yet, and not all geographical areas have a volunteer receiving ADS-B transmissions from airplanes. The ADS-B Exchange website has instructions on how to contribute data from your location.
+
+**What's New:**
+
+When there are more than a few aircraft around, Aircraft Radar will ask you if you want to hear the rest of the list, instead of only telling you about the nearest 4!
 
 **Keywords:**
 
