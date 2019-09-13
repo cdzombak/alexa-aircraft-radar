@@ -13,4 +13,6 @@ fi
 
 mkdir -p products
 rm -f products/aircraft-radar.zip
-zip -rq products/aircraft-radar.zip *.js node_modules
+pushd src
+zip -rq ../products/aircraft-radar.zip *.js ../node_modules
+popd

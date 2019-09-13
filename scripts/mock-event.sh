@@ -20,4 +20,4 @@ else
     exit 2
 fi
 
-lambda-local -l index.js -h handler -t 10 -e "mock-events/$1.json" -E "{\"MOCK_LOCATION\": \"$LOC\"}"
+lambda-local -l src/index.js -h handler -t 10 -e "mock-events/$1.json" -E "{\"MOCK_LOCATION\": \"$LOC\"}"
