@@ -1,6 +1,5 @@
 'use strict';
 
-const Promise = require('bluebird')
 const rp = require('request-promise')
 
 // A geocode service which returns lat/lng _and_ elevation (in feet) for a given string address.

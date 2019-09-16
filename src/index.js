@@ -5,6 +5,7 @@ const ADSB = require('./adsb-query')
 const AvFormat = require('./aviation-formatting')
 const SkyView = require('./skyview')
 const AlexaDeviceAddressClient = require('./AlexaDeviceAddressClient');
+// TODO(cdzombak): can I get rid of bluebird?
 const Promise = require('bluebird')
 const GeocodeService = require('./geocode')
 const Response = require('./alexa-response-builder')
