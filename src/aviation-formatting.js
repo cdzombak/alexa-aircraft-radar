@@ -10,8 +10,10 @@ exports.cardinal = function(angle, badInputValue) {
   const degree = 360 / directions
   angle = angle + degree/2
 
+  // noinspection PointlessArithmeticExpressionJS
   if (angle >= 0 * degree && angle < 1 * degree)
     return "north"
+  // noinspection PointlessArithmeticExpressionJS
   if (angle >= 1 * degree && angle < 2 * degree)
     return "northeast"
   if (angle >= 2 * degree && angle < 3 * degree)

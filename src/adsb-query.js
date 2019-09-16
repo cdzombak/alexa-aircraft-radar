@@ -14,9 +14,9 @@ exports.query = function(location, options) {
   url += 'lng=' + location['lng'] + '&'
   url += 'fDstL=0&fDstU=' + options['radius'] + '&'
 
-  if (options['helicopter']) url += 'fSpcQ=4&';
-  if (options['jet']) url += 'fEgtQ=3&';
-  if (options['military']) url += 'fMilQ=1&';
+  if (options['helicopter']) { url += 'fSpcQ=4&' }
+  if (options['jet']) { url += 'fEgtQ=3&' }
+  if (options['military']) { url += 'fMilQ=1&' }
 
   url = url.slice(0, -1); // strip trailing ampersand
 
@@ -49,9 +49,7 @@ exports.preprocessAircraftList = function(acList, groundElev) {
     const altAglKm = (altAgl) / 3280.84
     ac['cdz_altAgl'] = altAgl
     ac['cdz_hypot'] = Math.hypot(altAglKm, ac.Dst)
-
-    const distMi = ac.Dst * 0.62
-    ac['cdz_DstMi'] = distMi
+    ac['cdz_DstMi'] = ac.Dst * 0.62
   });
 
   acList.sort(function(a,b) {return (a.cdz_hypot > b.cdz_hypot) ? 1 : ((b.cdz_hypot > a.cdz_hypot) ? -1 : 0);} )
@@ -65,8 +63,8 @@ exports.thumbnailURL = function(aircraft) {
   }
 
   var url = "https://images.radarskill.cdzombak.net/api/image?"
-  if (aircraft.Icao) url += 'icao=' + aircraft.Icao + '&'
-  if (aircraft.Reg) url += 'reg=' + aircraft.Reg + '&'
+  if (aircraft.Icao) { url += 'icao=' + aircraft.Icao + '&' }
+  if (aircraft.Reg) { url += 'reg=' + aircraft.Reg + '&' }
   url += 'key=' + encodeURIComponent(process.env.IMAGE_API_KEY)
 
   const reqOptions = {

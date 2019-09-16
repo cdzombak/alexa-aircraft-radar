@@ -11,16 +11,12 @@ const GeocodeService = require('./geocode')
 const Response = require('./alexa-response-builder')
 
 const APP_ID = 'amzn1.ask.skill.aec65dec-e9f5-453e-934e-eb5e53c5de6e'
-const SKILL_NAME = 'Aircraft Radar'
-
 const ALL_ADDRESS_PERMISSION = "read::alexa:device:all:address"
 const PERMISSIONS = [ALL_ADDRESS_PERMISSION]
 
 const HELP_MESSAGE = 'You can ask what aircraft, helicopters, or jets are nearby, like "what aircraft are around?" or "what helicopters are nearby?" Or you can ask just about aircraft that are overhead, like: "what jets are overhead?"'
 const HELP_REPROMPT = 'What can I help you with?'
 const ERROR_MESSAGE = "Sorry, I couldn't fetch aircraft information. Please try again later."
-const STOP_MESSAGE = 'Goodbye!'
-
 const NOTIFY_MISSING_PERMISSIONS = "Please enable Device Address permissions for the Aircraft Radar skill, in the Amazon Alexa app."
 const NO_ADDRESS = "It looks like you don't have an address set. Please set an address for this Echo, in the Amazon Alexa app."
 const LOCATION_FAILURE = "There was an error finding your location. Please enable Device Address permissions for the Aircraft Radar skill, and set an address for this Echo, in the Amazon Alexa app."
@@ -37,7 +33,7 @@ function appendModelFromAircraft(response, ac, addMilitaryDesc) {
     }
   }
 
-  var modelStr = ac.Mdl.trim();
+  let modelStr = ac.Mdl.trim();
 
   modelStr = modelStr.replace(/^[0-9][0-9][0-9][0-9]/, '')
 
@@ -579,9 +575,7 @@ const handlers = {
   },
   'AMAZON.HelpIntent': function () {
     console.log("Handling AMAZON.HelpIntent")
-    const speechOutput = HELP_MESSAGE;
-    const reprompt = HELP_REPROMPT;
-    this.response.speak(speechOutput).listen(reprompt);
+    this.response.speak(HELP_MESSAGE).listen(HELP_REPROMPT);
     this.emit(':responseReady');
   },
   'AMAZON.CancelIntent': function () {
