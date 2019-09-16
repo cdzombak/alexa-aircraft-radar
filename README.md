@@ -49,7 +49,7 @@ Install dependencies, including those for development, with `npm install`.
 
 Once you have an API key for the geocoding service and aircraft image service, run `source .env.dev` in your shell before running mock requests (see the next step). You can create this file by copying `.env.sample` and filling out the empty values there.
 
-### Run mock requests with lambda-local
+### Run mock requests with `lambda-local`
 
 `package.json` defines a script that can be used to run a mock request for every supported intent.
 
@@ -63,9 +63,11 @@ Use `scripts/utterance-gen.py` to programmatically generate variants of utteranc
 
 ## Deployment
 
-`npm run package` will generate a zip file suitable for uploading to AWS Lambda. It’s placed in the `products` subdirectory.
+`npm run package` generates a zip file suitable for uploading to AWS Lambda. It’s placed in the `products` subdirectory. (See `scripts/package.sh`.)
 
-For convenience when developing on macOS, `npm run deploy` will generate the zip package, copy its path to the clipboard, and open your web browser to the deployment page.
+`npm run deploy` uses [the AWS CLI tool](https://aws.amazon.com/cli/) to deploy the Lambda function. Install `aws` via `brew install awscli`. The script respects the `AWS_PROFILE_NAME` environment variable, if set. (See `scripts/deploy.sh`.)
+
+`npm run deploy-website` rsyncs the `www` folder to [the public website](https://www.radarskill.dzombak.com).
 
 ### Environment Vars
 
@@ -99,7 +101,11 @@ The skill’s icon is stored in this repository but _is not available for use by
 
 ## Author
 
-Chris Dzombak: [dzombak.com](https://www.dzombak.com) / [@cdzombak](https://twitter.com/cdzombak) / chris@dzombak.com
+**Chris Dzombak** 
+
+- [dzombak.com](https://www.dzombak.com)
+- [@cdzombak](https://twitter.com/cdzombak)
+- chris@dzombak.com
 
 ## Inspiration
 
