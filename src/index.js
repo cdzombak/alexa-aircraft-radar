@@ -294,7 +294,7 @@ class SentNoAddressMessageError extends Error {}
 
 class GeocodeError extends Error {
   ssmlMessage() {
-    return "Sorry, I couldn't pinpoint your location. Please verify that this Echo's address is correct, then try again."
+    return "Sorry, I couldn't pinpoint your location. Please verify that this Echo's address is set correctly, then try again."
   }
 }
 
