@@ -302,22 +302,30 @@ function getDeviceLocation(ctx) {
   const permissions = ctx.event.context.System.user.permissions
   const consentToken = permissions ? permissions.consentToken : null;
 
+  // allow requesting a mock location with request.cdz_mockLocation in the JSON input payload
+  // or via the MOCK_LOCATION environment var. may be set to either 'valid' or 'invalid'.
+  // if both are set, the value from the JSON payload takes priority.
+  // either bypasses the device location process.
+  const requestMockLocation = ('cdz_mockLocation' in ctx.event.request) ? ctx.event.request.cdz_mockLocation : undefined
+  const envMockLocation = process.env.MOCK_LOCATION
+
   // If we have not been provided with a consent token, this means that the user has not
   // authorized your skill to access this information. In this case, you should prompt them
   // that you don't have permissions to retrieve their address.
-  if (!consentToken && !process.env.MOCK_LOCATION) {
-    ctx.emit(":tellWithPermissionCard", NOTIFY_MISSING_PERMISSIONS, PERMISSIONS);
-    return Promise.reject(new SentPermissionsCardError());
+  if (!consentToken && !envMockLocation && !requestMockLocation) {
+    ctx.emit(":tellWithPermissionCard", NOTIFY_MISSING_PERMISSIONS, PERMISSIONS)
+    return Promise.reject(new SentPermissionsCardError())
   }
 
-  var address;
+  let address;
 
-  if (process.env.MOCK_LOCATION) {
-    const MockLocation = require('./mock-locations')
-    if (process.env.MOCK_LOCATION == 'invalid') {
-      address = Promise.resolve (MockLocation.INVALID_LOCATION)
+  if (envMockLocation || requestMockLocation) {
+    const MockLocations = require('./mock-locations')
+    const mockLocation = requestMockLocation ? requestMockLocation : envMockLocation
+    if (mockLocation === 'invalid') {
+      address = Promise.resolve(MockLocations.INVALID_LOCATION)
     } else {
-      address = Promise.resolve (MockLocation.VALID_LOCATION)
+      address = Promise.resolve(MockLocations.VALID_LOCATION)
     }
   } else {
     const deviceId = ctx.event.context.System.device.deviceId;
