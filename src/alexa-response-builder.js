@@ -1,7 +1,5 @@
 'use strict';
 
-const Promise = require('bluebird')
-
 class AlexaResponseBuilder {
 
   constructor(title) {
@@ -41,7 +39,7 @@ class AlexaResponseBuilder {
 
   append(text, ssml) {
     this._text += text;
-    if (ssml == undefined) {
+    if (ssml === undefined) {
       this._ssml += text;
     } else {
       this._ssml += ssml;
