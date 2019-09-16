@@ -14,6 +14,15 @@ This top-level README covers technical topics relevant to development of the ski
 
 This is a standard Node application which requires Node v8. It might work with newer Node versions, but AWS Lambda uses v8.
 
+On macOS,
+```shell script
+brew tap homebrew/cask-versions
+brew install node@8
+
+# then, in your shell:
+export PATH="/usr/local/opt/node@8/bin:$PATH"
+```
+
 ### AWS Lambda
 
 This application is deployed to [AWS Lambda](https://aws.amazon.com/lambda/). You can probably run it elsewhere, but it’s specifically designed for and tested with Lambda.
