@@ -4,6 +4,8 @@ const Https = require('https');
 
 /**
  * This is a small wrapper client for the Alexa Address API.
+ *
+ * Taken from some Alexa sample code in Sept. 2017.
  */
 class AlexaDeviceAddressClient {
 
