@@ -12,12 +12,12 @@ exports.VALID_LOCATION = {
 }
 
 exports.INVALID_LOCATION = {
-  'addressLine1': 'NF-1700100',
+  'addressLine1': 'NF-dfddddd',
   'addressLine2': null,
   'addressLine3': null,
-  'districtOrCounty': 'Stevens',
-  'stateOrRegion': 'WA',
-  'city': 'Colville',
-  'countryCode': 'US',
-  'postalCode': '99114'
+  'districtOrCounty': 'flalalks',
+  'stateOrRegion': 'XX',
+  'city': 'na',
+  'countryCode': 'XX',
+  'postalCode': '00000'
 }
