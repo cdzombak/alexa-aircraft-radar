@@ -1,22 +1,10 @@
-'use strict';
+'use strict'
 
-exports.RadiusString = {
-  Overhead_KM: '15',
-  Nearby_KM: '40'
-}
+// Filter to be applied with Array.prototype.filter
 
-// Filters to be applied with Array.prototype.filter
-
-// Deprecated:
-exports.overhead = function(ac) {
-  if      (ac.cdz_altAgl < 2000) { return ac.cdz_hypot < 4 }
-  else if (ac.cdz_altAgl < 4000) { return ac.cdz_hypot < 8 }
-  else if (ac.cdz_altAgl < 6000) { return ac.cdz_hypot < 10 }
-  else { return ac.Dst <= 15 }
-}
-
+// Given an aircraft, returns whether to consider the aircraft "in view" of the user
 exports.nearby = function(ac) {
-  if      (ac.cdz_altAgl <= 2000)  { return ac.cdz_hypot <= 15 }
-  else if (ac.cdz_altAgl <= 4000)  { return ac.cdz_hypot <= 25 }
-  else { return ac.Dst <= 40 }
+  if      (ac.altitudeAgl <= 2000)  { return ac.user3DDistanceKm <= 15 }
+  else if (ac.altitudeAgl <= 4000)  { return ac.user3DDistanceKm <= 25 }
+  else                              { return ac.userDistanceKm <= 40 }
 }

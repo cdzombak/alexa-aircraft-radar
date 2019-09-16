@@ -25,15 +25,7 @@ const MAX_NEARBY = 3
 const MAX_CONTINUE = 4
 
 function appendModelFromAircraft(response, ac, addMilitaryDesc) {
-  if (!ac.Mdl) {
-    if (!ac.Type) {
-      return "unknown-model";
-    } else {
-      return ac.Type;
-    }
-  }
-
-  let modelStr = ac.Mdl.trim();
+  let modelStr = ac.modelDescription;
 
   modelStr = modelStr.replace(/^[0-9][0-9][0-9][0-9]/, '')
 
@@ -52,21 +44,13 @@ function appendModelFromAircraft(response, ac, addMilitaryDesc) {
   modelStr = modelStr.replace('GULFSTREAM', 'Gulfstream')
   modelStr = modelStr.replace('BOMBARDIER', 'Bombardier')
 
-  switch (ac.Species) {
-    case 4:
-      modelStr += " helicopter"
-      break
-    case 5:
-      modelStr += " gyrocopter"
-      break
-    case 6:
-      modelStr += " tilt-wing"
-      break
+  if (ac.isHelicopter && modelStr.indexOf("helicopter") === -1) {
+    modelStr += " helicopter"
   }
 
   modelStr = modelStr.trim()
 
-  if (ac.Mil && addMilitaryDesc) {
+  if (ac.isMilitary && addMilitaryDesc) {
     modelStr = 'military ' + modelStr
   }
 
@@ -128,12 +112,12 @@ function fmtAirport(airportStr) {
   airportStr = airportStr.replace(', United States', '')
 
   // remove leading code, ie. "KDTW"
-  var strings = airportStr.split(' ')
+  let strings = airportStr.split(' ')
   strings.splice(0, 1)
   airportStr = strings.join(' ')
 
   strings = airportStr.split(',')
-  if (strings.length == 2) {
+  if (strings.length === 2) {
     // Handle inputs like "Palm Beach, West Palm Beach"
     if (strings[1].toLowerCase().includes(strings[0].toLowerCase())) {
       airportStr = strings[1]
@@ -149,8 +133,8 @@ function fmtAirport(airportStr) {
 
 function fmtDistance(distance) {
   const round_dec = function(value, precision) {
-      var multiplier = Math.pow(10, precision || 0);
-      return Math.round(value * multiplier) / multiplier;
+    const multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
   }
 
   if (distance < 5) {
@@ -161,28 +145,28 @@ function fmtDistance(distance) {
 }
 
 function appendAltFromAircraft(response, ac) {
-  if (ac.Alt) {
+  if (ac.altitude) {
     response.append('at ')
-    response.append(ac.Alt + ' feet,', '<say-as interpret-as="unit">' + ac.Alt + 'ft</say-as>,')
+    response.append(ac.altitude + ' feet,', '<say-as interpret-as="unit">' + ac.altitude + 'ft</say-as>,')
   }
 }
 
 function appendAircraftDetails(response, ac, addMilitaryDesc) {
   appendModelFromAircraft(response, ac, addMilitaryDesc)
 
-  if (ac.From) {
-    response.append(" from " + fmtAirport(ac.From))
+  if (ac.from) {
+    response.append(" from " + fmtAirport(ac.from))
   }
 
   response.append(', ')
-  response.append(fmtDistance(ac.cdz_DstMi) + ' miles ' + AvFormat.cardinal(ac.Brng, "away") + ',')
+  response.append(fmtDistance(ac.userDistanceMi) + ' miles ' + AvFormat.cardinal(ac.userBearing, "away") + ',')
   response.space()
   appendAltFromAircraft(response, ac)
   response.space()
-  response.append('heading ' + AvFormat.cardinal(ac.Trak, null))
+  response.append('heading ' + AvFormat.cardinal(ac.trak, null))
 
-  if (ac.Call && !ac.CallSus) {
-    response.append(", with callsign " + ac.Call)
+  if (ac.callsign && !ac.callSus) {
+    response.append(", with callsign " + ac.callsign)
   }
 }
 
@@ -200,40 +184,32 @@ function singleAircraftOutput(response, ac, position, type) {
 function verboseAircraftOutput(response, ac) {
   appendModelFromAircraft(response, ac, true)
   response.append(', ')
-  response.append(fmtDistance(ac.cdz_DstMi) + ' miles ' + AvFormat.cardinal(ac.Brng, "away") + ',')
+  response.append(fmtDistance(ac.userDistanceMi) + ' miles ' + AvFormat.cardinal(ac.userBearing, "away") + ',')
   response.space()
   appendAltFromAircraft(response, ac)
   response.space()
-  response.append('heading ' + AvFormat.cardinal(ac.Trak, null))
+  response.append('heading ' + AvFormat.cardinal(ac.trak, null))
 
-  if (ac.From && ac.To) {
-    response.append(", en route from " + fmtAirport(ac.From))
+  if (ac.from && ac.to) {
+    response.append(", en route from " + fmtAirport(ac.from))
 
-    if (ac.From != ac.To) {
-      response.append(", to " + fmtAirport(ac.To))
+    if (ac.from !== ac.to) {
+      response.append(", to " + fmtAirport(ac.to))
     }
-
-    if (ac.Stops && ac.Stops.length) {
-      if (ac.Stops.length == 1) {
-        response.append(", stopping at " + fmtAirport(ac.Stops[0]))
-      } else {
-        response.append(", making " + ac.Stops.length + " stops")
-      }
-    }
-  } else if (ac.From) {
-    response.append(", from " + fmtAirport(ac.From))
+  } else if (ac.from) {
+    response.append(", from " + fmtAirport(ac.from))
   }
 
-  if (ac.Call && !ac.CallSus) {
-    response.append(", with callsign " + ac.Call + " and registration")
+  if (ac.callsign && !ac.callSus) {
+    response.append(", with callsign " + ac.callsign + " and registration")
   } else {
     response.append(", with registration")
   }
 
   response.append(' ', ': ')
-  console.log("[VERBOSE DEBUG] dealing with aircraft reg:", ac.Reg)
-  if (ac.Reg !== null && ac.Reg !== undefined) {
-    response.append(ac.Reg, '<prosody rate="slow">' + AvFormat.icaoStr(ac.Reg) +'</prosody>')
+  console.log("[VERBOSE DEBUG] dealing with aircraft reg:", ac.registration)
+  if (ac.registration !== null && ac.registration !== undefined) {
+    response.append(ac.registration, '<prosody rate="slow">' + AvFormat.icaoStr(ac.registration) +'</prosody>')
   } else {
     response.append("unknown")
   }
@@ -249,13 +225,13 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
     return
   }
 
-  if (acList.length == limit + 1) {
+  if (acList.length === limit + 1) {
     limit += 1
   }
 
   response.append(acList.length + ' ')
 
-  if (acList.length == 1) {
+  if (acList.length === 1) {
     response.append(TypeFilter.singularString(typeFilter) + ' is ' + position + ': ')
     verboseAircraftOutput(response, acList[0])
     return []
@@ -268,7 +244,7 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
   }
 
   response.append(': ')
-  var continuationAircraft = []
+  let continuationAircraft = []
 
   acList.forEach(function(ac, idx, list) {
     // A [model] from [airport] Z miles A at X feet heading Y; …
@@ -277,7 +253,7 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
       return
     }
 
-    const atEnd = (idx == limit-1 || idx == acList.length-1)
+    const atEnd = (idx === limit-1 || idx === acList.length-1)
     if (atEnd) {
       response.append(' and ')
     }
@@ -300,7 +276,7 @@ class GeocodeError extends Error {
 
 function getDeviceLocation(ctx) {
   const permissions = ctx.event.context.System.user.permissions
-  const consentToken = permissions ? permissions.consentToken : null;
+  const consentToken = permissions ? permissions.consentToken : null
 
   // allow requesting a mock location with request.cdz_mockLocation in the JSON input payload
   // or via the MOCK_LOCATION environment var. may be set to either 'valid' or 'invalid'.
@@ -317,7 +293,7 @@ function getDeviceLocation(ctx) {
     return Promise.reject(new SentPermissionsCardError())
   }
 
-  let address;
+  let address
 
   if (envMockLocation || requestMockLocation) {
     const MockLocations = require('./mock-locations')
@@ -328,37 +304,40 @@ function getDeviceLocation(ctx) {
       address = Promise.resolve(MockLocations.VALID_LOCATION)
     }
   } else {
-    const deviceId = ctx.event.context.System.device.deviceId;
-    const apiEndpoint = ctx.event.context.System.apiEndpoint;
-    const alexaDeviceAddressClient = new AlexaDeviceAddressClient(apiEndpoint, deviceId, consentToken);
+    const deviceId = ctx.event.context.System.device.deviceId
+    const apiEndpoint = ctx.event.context.System.apiEndpoint
+    const alexaDeviceAddressClient = new AlexaDeviceAddressClient(apiEndpoint, deviceId, consentToken)
 
     address = alexaDeviceAddressClient.getFullAddress().then((addressResponse) => {
       switch(addressResponse.statusCode) {
         case 200:
-          return addressResponse.address;
+          return addressResponse.address
         case 204:
           // This likely means that the user didn't have their address set via the companion app.
-          console.log("[Address] Successfully requested from device address API, but no address was returned.");
-          ctx.emit(":tell", NO_ADDRESS);
-          return Promise.reject(new SentNoAddressMessageError());
+          console.log("[Address] Successfully requested from device address API, but no address was returned.")
+          ctx.emit(":tell", NO_ADDRESS)
+          return Promise.reject(new SentNoAddressMessageError())
         case 403:
-          console.log("[Address] The consent token we had wasn't authorized to access the user's address.");
-          ctx.emit(":tellWithPermissionCard", NOTIFY_MISSING_PERMISSIONS, PERMISSIONS);
-          return Promise.reject(new SentPermissionsCardError());
+          console.log("[Address] The consent token we had wasn't authorized to access the user's address.")
+          ctx.emit(":tellWithPermissionCard", NOTIFY_MISSING_PERMISSIONS, PERMISSIONS)
+          return Promise.reject(new SentPermissionsCardError())
         default:
-          console.log("[Address] Unsuccessful address query.", addressResponse);
-          ctx.emit(":tell", LOCATION_FAILURE);
-          return Promise.reject(new SentLocationError());
+          console.log("[Address] Unsuccessful address query.", addressResponse)
+          ctx.emit(":tell", LOCATION_FAILURE)
+          return Promise.reject(new SentLocationError())
       }
     })
   }
 
   return address.then(function(address) {
-    console.log("[Address] Got address:", address);
-
-    var addressStr = ''
+    console.log("[Address] Got address:", address)
+    let addressStr = ''
     const keys = ['addressLine1', 'addressLine2', 'addressLine3', 'city', 'districtOrCounty', 'stateOrRegion', 'postalCode', 'countryCode']
-    keys.forEach((key) => { if (address[key]) addressStr += address[key] + ', ' })
+    keys.forEach((key) => {
+      if (address[key]) {
+        addressStr += address[key] + ', '
+      }
+    })
     return GeocodeService.geocode(addressStr)
   })
 }
@@ -366,27 +345,6 @@ function getDeviceLocation(ctx) {
 const Mode = {
   Single: 0,
   Multi: 1
-}
-
-const Position = {
-  Overhead: 0,
-  Nearby: 1,
-
-  string: function(position) {
-    return position === Position.Overhead ? "overhead" : "nearby"
-  },
-
-  singularString: function(position) {
-    return position === Position.Overhead ? "closest overhead" : "nearest"
-  },
-
-  searchRadius: function(position) {
-    return position === Position.Overhead ? SkyView.RadiusString.Overhead_KM : SkyView.RadiusString.Nearby_KM
-  },
-
-  filter: function(position) {
-    return position === Position.Overhead ? SkyView.overhead : SkyView.nearby
-  }
 }
 
 const TypeFilter = {
@@ -422,61 +380,48 @@ const TypeFilter = {
   }
 }
 
-function queryHandler(ctx, mode, position, typeFilter, title) {
-  console.log("[Query Handler] Handling query for mode", mode, "; position", position, "; type filter", typeFilter)
+function queryHandler(ctx, mode, typeFilter, title) {
+  console.log("[Query Handler] Handling query for mode", mode, "; type filter", typeFilter)
 
-  const location = getDeviceLocation(ctx).then((location) => {
-    // really the GeocodeService API should reject this promise; and the remote API should return a different HTTP code and error in JSON
-    if (!location.location) {
-      return Promise.reject(new GeocodeError());
-    } else {
-      return location
-    }
-  })
+  const location = getDeviceLocation(ctx)
+    .catch(e => Promise.reject(new GeocodeError()))
 
   const acList = location.then((location) => {
-    var opts = {
-      'radius': Position.searchRadius(position)
-    }
+    let acFilters = {}
     switch (typeFilter) {
       case TypeFilter.Helicopters:
-        opts[ADSB.Filter.Helicopters] = true
+        acFilters[ADSB.Filter.Helicopters] = true
         break
       case TypeFilter.Jets:
-        opts[ADSB.Filter.Jets] = true
+        acFilters[ADSB.Filter.Jets] = true
         break
       case TypeFilter.Military:
-        opts[ADSB.Filter.Military] = true
+        acFilters[ADSB.Filter.Military] = true
         break
     }
-    return ADSB.query(location.location, opts)
+    return ADSB.query(location, acFilters, SkyView.nearby)
   })
 
   Promise.all([location, acList]).then(function(values) {
-    const location = values[0]
-    var acList = values[1]
-
-    acList = ADSB.preprocessAircraftList(acList, location.elevation)
-    acList = acList.filter(Position.filter(position))
-
+    const acList = values[1]
     const response = new Response(title)
 
-    if (mode == Mode.Single) {
+    if (mode === Mode.Single) {
       if (!acList.length) {
-        response.append("No " + TypeFilter.string(typeFilter) + " are " + Position.string(position) + ".")
+        response.append("No " + TypeFilter.string(typeFilter) + " are nearby.")
       } else {
         const ac = acList[0]
-        singleAircraftOutput(response, ac, Position.singularString(position), TypeFilter.singularString(typeFilter))
+        singleAircraftOutput(response, ac, "nearest", TypeFilter.singularString(typeFilter))
       }
     } else {
       // Mode.Multi
-      const addMilitaryDesc = (typeFilter != TypeFilter.Military) // describe planes as "military" iff user didn't filter to military planes only
-      const leftovers = multiAircraftOutput(response, acList, Position.string(position), typeFilter, MAX_NEARBY, addMilitaryDesc)
+      const addMilitaryDesc = (typeFilter !== TypeFilter.Military) // describe planes as "military" iff user didn't filter to military planes only
+      const leftovers = multiAircraftOutput(response, acList, "nearby", typeFilter, MAX_NEARBY, addMilitaryDesc)
 
       if (leftovers && leftovers.length > 0) {
         response.setNeedsMore("Do you want to hear more?")
         ctx.attributes['addMilitaryDesc'] = addMilitaryDesc
-        ctx.attributes['leftovers'] = leftovers
+        ctx.attributes['leftovers'] = leftovers.map(ac => ac.toJSON())
         ctx.attributes['title'] = title
       }
     }
@@ -500,13 +445,13 @@ function queryHandler(ctx, mode, position, typeFilter, title) {
 }
 
 function queryContinuationHandler(ctx) {
-  const acList = ctx.attributes['leftovers']
+  const acList = ctx.attributes['leftovers'].map(ADSB.AircraftView.fromJSON)
   const addMilitaryDesc = ctx.attributes['addMilitaryDesc']
   const title = ctx.attributes['title']
   const response = new Response(title)
 
   const limit = MAX_CONTINUE
-  var leftovers = []
+  let leftovers = []
 
   response.append('There is ')
   acList.forEach(function(ac, idx, list) {
@@ -516,7 +461,7 @@ function queryContinuationHandler(ctx) {
     }
 
     // A [model] from [airport] Z miles A at X feet heading Y; …
-    const atEnd = (idx == limit-1 || idx == acList.length-1)
+    const atEnd = (idx === limit-1 || idx === acList.length-1)
     if (atEnd) {
       response.append(' and ')
     }
@@ -543,31 +488,31 @@ const handlers = {
   },
   'Nearby_Aircraft': function () {
     console.log("Handling Nearby_Aircraft")
-    queryHandler(this, Mode.Multi, Position.Nearby, TypeFilter.All, "Nearby Aircraft")
+    queryHandler(this, Mode.Multi, TypeFilter.All, "Nearby Aircraft")
   },
   'Nearest_Aircraft': function () {
     console.log("Handling Nearest_Aircraft")
-    queryHandler(this, Mode.Single, Position.Nearby, TypeFilter.All, "Nearby Aircraft")
+    queryHandler(this, Mode.Single, TypeFilter.All, "Nearby Aircraft")
   },
   'Nearest_Jet': function () {
     console.log("Handling Nearest_Jet")
-    queryHandler(this, Mode.Single, Position.Nearby, TypeFilter.Jets, "Nearby Jets")
+    queryHandler(this, Mode.Single, TypeFilter.Jets, "Nearby Jets")
   },
   'Nearby_Jets': function () {
     console.log("Handling Nearby_Jets")
-    queryHandler(this, Mode.Multi, Position.Nearby, TypeFilter.Jets, "Nearby Jets")
+    queryHandler(this, Mode.Multi, TypeFilter.Jets, "Nearby Jets")
   },
   'Nearby_Helicopters': function () {
     console.log("Handling Nearby_Helicopters")
-    queryHandler(this, Mode.Multi, Position.Nearby, TypeFilter.Helicopters, "Nearby Helicopters")
+    queryHandler(this, Mode.Multi, TypeFilter.Helicopters, "Nearby Helicopters")
   },
   'Nearest_Helicopter': function () {
     console.log("Handling Nearest_Helicopter")
-    queryHandler(this, Mode.Single, Position.Nearby, TypeFilter.Helicopters, "Nearby Helicopters")
+    queryHandler(this, Mode.Single, TypeFilter.Helicopters, "Nearby Helicopters")
   },
   'Nearby_Military': function () {
     console.log("Handling Nearby_Military")
-    queryHandler(this, Mode.Multi, Position.Nearby, TypeFilter.Military, "Nearby Military Aircraft")
+    queryHandler(this, Mode.Multi, TypeFilter.Military, "Nearby Military Aircraft")
   },
   'AMAZON.NoIntent': function () {
     console.log("Handling AMAZON.NoIntent")

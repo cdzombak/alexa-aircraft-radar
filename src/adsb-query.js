@@ -1,6 +1,60 @@
-'use strict';
+'use strict'
 
-const rp = require('request-promise');
+const Aircraft = require('./aircraft')
+const Geocode = require('./geocode')
+const rp = require('request-promise')
+
+// Extends the Aircraft model to include properties about the view of the aircraft from the user's location.
+class AircraftView extends Aircraft {
+  constructor(apiDict, location) {
+    super(apiDict)
+    this.userLocation = location
+  }
+
+  static fromJSON(json) {
+    return new AircraftView(json['apiDict'], Geocode.Location3D.fromJSON(json['userLocation']))
+  }
+
+  toJSON() {
+    let json = super.toJSON()
+    json['userLocation'] = this.userLocation.toJSON()
+    return json
+  }
+
+  // Return the apparent elevation of the aircraft from the user's ground elevation.
+  get altitudeAgl() {
+    return this.altitudeMsl - this.userLocation.elevation
+  }
+
+  // Return the actual distance in 3D between the user and the aircraft.
+  get user3DDistanceMi() {
+    const altAglMi = this.altitudeAgl/5280.0
+    return Math.hypot(altAglMi, this.distanceMi(this.userLocation))
+  }
+
+  // Return the actual distance in 3D between the user and the aircraft.
+  get user3DDistanceKm() {
+    const altAglKm = this.altitudeAgl/3280.84
+    return Math.hypot(altAglKm, this.distanceKm(this.userLocation))
+  }
+
+  // Return the bearing from the user's location to the aircraft.
+  get userBearing() {
+    return this.bearingFrom(this.userLocation)
+  }
+
+  // Return the distance from the user, in a straight line across the ground.
+  get userDistanceMi() {
+    return this.location.distanceMi(this.userLocation)
+  }
+
+  // Return the distance from the user, in a straight line across the ground.
+  get userDistanceKm() {
+    return this.location.distanceKm(this.userLocation)
+  }
+}
+
+exports.AircraftView = AircraftView
 
 exports.Filter = {
   Helicopters: 'helicopter',
@@ -8,63 +62,64 @@ exports.Filter = {
   Military: 'military'
 }
 
-exports.query = function(location, options) {
-  var url = 'http://public-api.adsbexchange.com/VirtualRadar/AircraftList.json?';
-  url += 'lat=' + location['lat'] + '&'
-  url += 'lng=' + location['lng'] + '&'
-  url += 'fDstL=0&fDstU=' + options['radius'] + '&'
+function aircraftFilter(acFilters) {
+  return function (ac) {
+    if (acFilters['helicopter'] && !ac.isHelicopter) {
+      return false
+    }
+    if (acFilters['jet'] && !ac.isJet) {
+      return false
+    }
+    // noinspection RedundantIfStatementJS
+    if (acFilters['military'] && !ac.isMilitary) {
+      return false
+    }
+    return true
+  }
+}
 
-  if (options['helicopter']) { url += 'fSpcQ=4&' }
-  if (options['jet']) { url += 'fEgtQ=3&' }
-  if (options['military']) { url += 'fMilQ=1&' }
-
-  url = url.slice(0, -1); // strip trailing ampersand
-
+exports.query = function(location, acFilters, skyviewFilter) {
+  // 40km = 21.5983nm
+  const url = 'https://adsbexchange.com/api/aircraft/json/lat/'+location.latitude+'/lon/'+location.longitude+'/dist/22/'
   const reqOptions = {
     url: url,
     method: 'GET',
     headers: {
       'Accept': 'application/json',
       'Accept-Charset': 'utf-8',
-      'User-Agent': 'alexa-aircraft-radar'
+      'User-Agent': 'alexa-aircraft-radar',
+      'api-auth': process.env.ADSBX_API_KEY
     },
     json: 'true'
-  };
+  }
 
-  console.log('[ADSB] Aircraft List query:', url)
+  console.log('[ADSB] ADSBX request: ', url)
 
-  return rp(reqOptions).then(function(data) {
-    return data['acList']
-  });
-};
-
-exports.preprocessAircraftList = function(acList, groundElev) {
-  acList = acList.filter(function(ac) {
-    // filter out ground vehicles (7) and towers (8)
-    return ac.Species != 7 && ac.Species != 8
-  })
-
-  acList.forEach(function(ac, idx, list) {
-    const altAgl = ac.GAlt - groundElev
-    const altAglKm = (altAgl) / 3280.84
-    ac['cdz_altAgl'] = altAgl
-    ac['cdz_hypot'] = Math.hypot(altAglKm, ac.Dst)
-    ac['cdz_DstMi'] = ac.Dst * 0.62
-  });
-
-  acList.sort(function(a,b) {return (a.cdz_hypot > b.cdz_hypot) ? 1 : ((b.cdz_hypot > a.cdz_hypot) ? -1 : 0);} )
-
-  return acList
+  return rp(reqOptions)
+    .then(respData => respData['ac'].map(acDict => new AircraftView(acDict, location)))
+    .then(acList => acList.filter(skyviewFilter))
+    .then(acList => acList.filter(aircraftFilter(acFilters)))
+    .then(acList => acList.sort(
+      (a,b) => (a.user3DDistanceKm > b.user3DDistanceKm) ? 1 : ((b.user3DDistanceKm > a.user3DDistanceKm) ? -1 : 0))
+    )
+    .then(acList => {
+      console.log(acList)
+      return acList
+    })
 }
 
-exports.thumbnailURL = function(aircraft) {
-  if (!aircraft.Icao && !aircraft.Reg) {
+exports.thumbnailURL = function(ac) {
+  if (!ac.icao && !ac.registration) {
     return Promise.resolve(null)
   }
 
-  var url = "https://images.radarskill.cdzombak.net/api/image?"
-  if (aircraft.Icao) { url += 'icao=' + aircraft.Icao + '&' }
-  if (aircraft.Reg) { url += 'reg=' + aircraft.Reg + '&' }
+  let url = "https://images.radarskill.cdzombak.net/api/image?"
+  if (ac.icao) {
+    url += 'icao=' + ac.icao + '&'
+  }
+  if (ac.registration) {
+    url += 'reg=' + ac.registration + '&'
+  }
   url += 'key=' + encodeURIComponent(process.env.IMAGE_API_KEY)
 
   const reqOptions = {
@@ -76,7 +131,7 @@ exports.thumbnailURL = function(aircraft) {
       'User-Agent': 'alexa-aircraft-radar'
     },
     json: 'true'
-  };
+  }
 
   console.log('[ADSB] Image API request:', url)
 
@@ -88,5 +143,5 @@ exports.thumbnailURL = function(aircraft) {
       return null
     }
     return thumbnailURL
-  });
+  })
 }

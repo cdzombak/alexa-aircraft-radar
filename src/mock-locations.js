@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 exports.VALID_LOCATION = {
   'addressLine1': '118 S. Main St',

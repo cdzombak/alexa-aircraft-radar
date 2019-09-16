@@ -69,14 +69,14 @@ For convenience when developing on macOS, `npm run deploy` will generate the zip
 
 ### Environment Vars
 
+- `ADSBX_API_KEY` is the API key for the [ADS-B Exchange API](https://adsbexchange.com/data/#).
 - `GEOCODE_API_KEY` is the client key for my geocoding web service.
 - `IMAGE_API_KEY` is the client key for my aircraft images web service.
 
 ## Be nice to ADS-B Exchange
 
-Aircraft data comes from [ADS-B Exchange](http://www.adsbexchange.com). **Be nice to them** in the following ways:
+Aircraft data comes from [ADS-B Exchange](http://www.adsbexchange.com). Be nice to them:
 
-* Do not abuse their API.
 * [Donate to them.](https://www.adsbexchange.com/donate/)
 * If possible, [run an ADS-B receiver and feed them](https://www.adsbexchange.com/how-to-feed/).
 
@@ -84,6 +84,12 @@ Aircraft data comes from [ADS-B Exchange](http://www.adsbexchange.com). **Be nic
 
 * [SSML Reference](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/speech-synthesis-markup-language-ssml-reference)
 * [AircraftList.json API reference](http://www.virtualradarserver.co.uk/Documentation/Formats/AircraftList.aspx)
+
+## Updating ICAO 8643 Aircraft Types
+
+Visit https://www.icao.int/publications/DOC8643/Pages/Search.aspx, observe network requests in the Inspector, and download the AircraftTypes file.
+
+For Manufacturers, visit https://www.icao.int/publications/DOC8643/Pages/Manufacturers.aspx and download the Manufacturers file it loads.
 
 ## License
 
