@@ -1,6 +1,6 @@
 {
   "name": "alexa-aircraft-radar",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "description": "ADS-B Exchange skill for Amazon Alexa",
   "main": "index.js",
   "contributors": [
@@ -20,7 +20,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "scripts/package.sh",
-    "deploy": "npm run package && scripts/deploy.sh",
+    "deploy": "npm run clean && npm run package && scripts/deploy.sh",
     "clean": "rm -rf products",
     "deploy-website": "scripts/deploy-www.sh",
     "open-logs": "open \"https://app.logz.io/kibana-app/kibana#/discover/ae7d7510-605e-11e8-81d6-c72f7881f3d6\"",
@@ -28,8 +28,8 @@
     "mock-nearest-aircraft": "scripts/mock-event.sh Nearest_Aircraft --valid-location",
     "mock-nearby-aircraft": "scripts/mock-event.sh Nearby_Aircraft --valid-location",
     "mock-nearest-helicopter": "scripts/mock-event.sh Nearest_Helicopter --valid-location",
-    "mock-nearest-jet": "scripts/mock-event.sh Nearest_Jet --valid-location",
     "mock-nearby-helicopters": "scripts/mock-event.sh Nearby_Helicopters --valid-location",
+    "mock-nearest-jet": "scripts/mock-event.sh Nearest_Jet --valid-location",
     "mock-nearby-jets": "scripts/mock-event.sh Nearby_Jets --valid-location",
     "mock-nearby-military": "scripts/mock-event.sh Nearby_Military --valid-location",
     "mock-invalid-location": "scripts/mock-event.sh Nearby_Aircraft --invalid-location",
@@ -56,5 +56,5 @@
   "bugs": {
     "url": "https://github.com/cdzombak/alexa-aircraft-radar/issues"
   },
-  "homepage": "https://github.com/cdzombak/alexa-aircraft-radar#readme"
+  "homepage": "https://radarskill.dzombak.com"
 }

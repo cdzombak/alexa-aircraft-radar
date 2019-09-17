@@ -11,8 +11,12 @@ if [[ ! -d node_modules ]]; then
     exit 1
 fi
 
-mkdir -p products
-rm -f products/aircraft-radar.zip
-pushd src
-zip -rq ../products/aircraft-radar.zip *.js ../node_modules
+set -x
+
+mkdir -p ./products
+rm -f ./products/aircraft-radar.zip
+pushd ./src
+ln -s ../node_modules .
+zip -rq ../products/aircraft-radar.zip ./*.js ./node_modules
+rm ./node_modules
 popd
