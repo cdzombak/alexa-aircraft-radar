@@ -15,11 +15,13 @@
     "request-promise": "^4.2.4"
   },
   "devDependencies": {
+    "eslint": "^6.4.0",
     "lambda-local": "^1.6.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "package": "scripts/package.sh",
+    "lint": "./node_modules/.bin/eslint --fix src/**/*.js",
+    "package": "npm run lint && scripts/package.sh",
     "deploy": "npm run clean && npm run package && scripts/deploy.sh",
     "clean": "rm -rf products",
     "deploy-website": "scripts/deploy-www.sh",
