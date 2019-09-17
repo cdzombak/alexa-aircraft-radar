@@ -4,15 +4,15 @@ class AlexaResponseBuilder {
 
   constructor(title) {
     this._title = title;
-    this._text = "";
-    this._ssml = "";
+    this._text = '';
+    this._ssml = '';
     this._needsMore = null;
     this._thumbnailPromise = Promise.resolve(null)
   }
 
   respond(ctx) {
     if (this._needsMore) {
-      this.append(" " + this._needsMore, " <break time=\"500ms\" />" + this._needsMore);
+      this.append(` ${this._needsMore}`, ` <break time="500ms" />${this._needsMore}`);
     }
     this._thumbnailPromise.then((thumbnailURL) => {
       console.log('[AlexaResponseBuilder] Sending title:', this._title)
@@ -20,7 +20,7 @@ class AlexaResponseBuilder {
       console.log('[AlexaResponseBuilder] Sending SSML:', this._ssml)
       if (thumbnailURL) console.log('[AlexaResponseBuilder] Sending image:', thumbnailURL)
 
-      var image = null;
+      let image = null;
       if (thumbnailURL) {
         image = {
           smallImageUrl: thumbnailURL,

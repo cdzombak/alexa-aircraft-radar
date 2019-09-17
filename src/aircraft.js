@@ -1,8 +1,8 @@
 'use strict'
 
 const Location = require('./location')
-let AircraftTypes = require('./AircraftTypes.json')
-const AircraftManufacturers = require('./AircraftManufacturers.json')
+const AircraftTypes = require('./AircraftTypes.json')
+// const AircraftManufacturers = require('./AircraftManufacturers.json')
 
 function toBool(val) {
   if (val === undefined) {
@@ -62,13 +62,13 @@ class Aircraft {
       return Number(this._apiDict[key1])
     } else if (key2 in this._apiDict) {
       return Number(this._apiDict[key2])
-    } else {
-      return undefined
     }
+    return undefined
+
   }
 
   _stringFromApiDict(key1, key2) {
-    let retv
+    let retv = undefined
     if (key1 in this._apiDict) {
       retv = String(this._apiDict[key1])
     } else if (key2 in this._apiDict) {
@@ -176,7 +176,7 @@ class Aircraft {
     if (this._memoizedTypeMetadata !== undefined) {
       return this._memoizedTypeMetadata
     }
-    let metadata = AircraftTypes
+    const metadata = AircraftTypes
       .find(t => t.Designator === this.icaoType
         && ManufacturerBlacklist.find(c => c === t.ManufacturerCode) === undefined
       )
@@ -191,9 +191,9 @@ class Aircraft {
     //     manufacturer = mDict.Names[0]
     //   }
     // }
-    let manufacturer = toTitleCase(metadata.ManufacturerCode)
+    const manufacturer = toTitleCase(metadata.ManufacturerCode)
     if (manufacturer !== undefined) {
-      metadata.Manufacturer = manufacturer.replace(/\(.*?\)/g, '')
+      metadata.Manufacturer = manufacturer.replace(/\(.*?\)/g, '').replace(/ {2}/g, ' ').trim()
     }
     this._memoizedTypeMetadata = metadata
     return metadata
@@ -204,7 +204,7 @@ class Aircraft {
     if (!this.typeMetadata) {
       return false
     }
-    return this.typeMetadata.EngineType === "Jet"
+    return this.typeMetadata.EngineType === 'Jet'
   }
 
   // True if we know this is a helicopter-like thing; false otherwise.
@@ -249,13 +249,13 @@ class Aircraft {
     const manufacturer = this.typeMetadata.Manufacturer
     const modelName = this.typeMetadata.ModelFullName
     if (manufacturer !== undefined && modelName !== undefined && manufacturer.length > 0 && modelName.length > 0) {
-      return manufacturer + ' ' + modelName
+      return `${manufacturer} ${modelName}`
     }
     if (manufacturer === undefined || manufacturer.length === 0) {
       return modelName
     }
     if (modelName === undefined || modelName.length === 0) {
-      return manufacturer + ' aircraft'
+      return `${manufacturer} aircraft`
     }
     return 'unknown aircraft'
   }

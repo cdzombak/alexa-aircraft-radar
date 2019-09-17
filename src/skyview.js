@@ -6,5 +6,5 @@
 exports.nearby = function(ac) {
   if      (ac.altitudeAgl <= 2000)  { return ac.user3DDistanceKm <= 15 }
   else if (ac.altitudeAgl <= 4000)  { return ac.user3DDistanceKm <= 25 }
-  else                              { return ac.userDistanceKm <= 40 }
+  return ac.userDistanceKm <= 40 
 }

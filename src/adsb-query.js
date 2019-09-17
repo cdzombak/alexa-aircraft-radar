@@ -16,7 +16,7 @@ class AircraftView extends Aircraft {
   }
 
   toJSON() {
-    let json = super.toJSON()
+    const json = super.toJSON()
     json['userLocation'] = this.userLocation.toJSON()
     return json
   }
@@ -27,6 +27,7 @@ class AircraftView extends Aircraft {
   }
 
   // Return the actual distance in 3D between the user and the aircraft.
+  // noinspection JSUnusedGlobalSymbols
   get user3DDistanceMi() {
     const altAglMi = this.altitudeAgl/5280.0
     return Math.hypot(altAglMi, this.distanceMi(this.userLocation))
@@ -80,9 +81,9 @@ function aircraftFilter(acFilters) {
 
 exports.query = function(location, acFilters, skyviewFilter) {
   // 40km = 21.5983nm
-  const url = 'https://adsbexchange.com/api/aircraft/json/lat/'+location.latitude+'/lon/'+location.longitude+'/dist/22/'
+  const url = `https://adsbexchange.com/api/aircraft/json/lat/${location.latitude}/lon/${location.longitude}/dist/22/`
   const reqOptions = {
-    url: url,
+    url,
     method: 'GET',
     headers: {
       'Accept': 'application/json',
@@ -100,9 +101,9 @@ exports.query = function(location, acFilters, skyviewFilter) {
     .then(acList => acList.filter(skyviewFilter))
     .then(acList => acList.filter(aircraftFilter(acFilters)))
     .then(acList => acList.sort(
-      (a,b) => (a.user3DDistanceKm > b.user3DDistanceKm) ? 1 : ((b.user3DDistanceKm > a.user3DDistanceKm) ? -1 : 0))
+      (a,b) => ((a.user3DDistanceKm > b.user3DDistanceKm) ? 1 : ((b.user3DDistanceKm > a.user3DDistanceKm) ? -1 : 0)))
     )
-    .then(acList => {
+    .then((acList) => {
       console.log(acList)
       return acList
     })
@@ -113,17 +114,17 @@ exports.thumbnailURL = function(ac) {
     return Promise.resolve(null)
   }
 
-  let url = "https://images.radarskill.cdzombak.net/api/image?"
+  let url = 'https://images.radarskill.cdzombak.net/api/image?'
   if (ac.icao) {
-    url += 'icao=' + ac.icao + '&'
+    url += `icao=${ac.icao}&`
   }
   if (ac.registration) {
-    url += 'reg=' + ac.registration + '&'
+    url += `reg=${ac.registration}&`
   }
-  url += 'key=' + encodeURIComponent(process.env.IMAGE_API_KEY)
+  url += `key=${encodeURIComponent(process.env.IMAGE_API_KEY)}`
 
   const reqOptions = {
-    url: url,
+    url,
     method: 'GET',
     headers: {
       'Accept': 'application/json',
@@ -135,7 +136,7 @@ exports.thumbnailURL = function(ac) {
 
   console.log('[ADSB] Image API request:', url)
 
-  return rp(reqOptions).then(function(response) {
+  return rp(reqOptions).then((response) => {
     console.log('[ADSB] Image API response:', response)
 
     const thumbnailURL = response.thumbnailURL

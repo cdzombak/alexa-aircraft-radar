@@ -15,7 +15,7 @@ class Location3D extends Location {
   }
 
   toJSON() {
-    let json = super.toJSON()
+    const json = super.toJSON()
     json['elevation'] = this.elevation
     return json
   }
@@ -26,12 +26,12 @@ exports.Location3D = Location3D
 // A geocode service which returns lat/lng _and_ elevation (in feet) for a given string address.
 // https://github.com/cdzombak/geocode-service
 exports.geocode = function(addressStr) {
-  const url = "https://location.radarskill.cdzombak.net/api/geocode?"
-    + 'address=' + encodeURIComponent(addressStr) + '&'
-    + 'key=' + encodeURIComponent(process.env.GEOCODE_API_KEY)
+  const url = `${'https://location.radarskill.cdzombak.net/api/geocode?'
+    + 'address='}${encodeURIComponent(addressStr)}&`
+    + `key=${encodeURIComponent(process.env.GEOCODE_API_KEY)}`
 
   const reqOptions = {
-    url: url,
+    url,
     method: 'GET',
     headers: {
       'Accept': 'application/json',
@@ -42,9 +42,9 @@ exports.geocode = function(addressStr) {
   }
 
   return rp(reqOptions)
-    .then(respData => {
+    .then((respData) => {
       if (!respData.location) {
-        throw new Error("Response did not include a location.")
+        throw new Error('Response did not include a location.')
       }
       return new Location3D(respData.location.lat, respData.location.lng, respData.elevation)
     })

@@ -1,4 +1,5 @@
-'use strict';
+/* eslint-disable no-use-before-define */
+'use strict'
 
 const Alexa = require('alexa-sdk');
 const ADSB = require('./adsb-query')
@@ -9,15 +10,15 @@ const GeocodeService = require('./geocode')
 const Response = require('./alexa-response-builder')
 
 const APP_ID = 'amzn1.ask.skill.aec65dec-e9f5-453e-934e-eb5e53c5de6e'
-const ALL_ADDRESS_PERMISSION = "read::alexa:device:all:address"
+const ALL_ADDRESS_PERMISSION = 'read::alexa:device:all:address'
 const PERMISSIONS = [ALL_ADDRESS_PERMISSION]
 
 const HELP_MESSAGE = 'You can ask what aircraft, helicopters, or jets are nearby, like "what aircraft are around?" or "what helicopters are nearby?" Or you can ask just about aircraft that are overhead, like: "what jets are overhead?"'
 const HELP_REPROMPT = 'What can I help you with?'
 const ERROR_MESSAGE = "Sorry, I couldn't fetch aircraft information. Please try again later."
-const NOTIFY_MISSING_PERMISSIONS = "Please enable Device Address permissions for the Aircraft Radar skill, in the Amazon Alexa app."
+const NOTIFY_MISSING_PERMISSIONS = 'Please enable Device Address permissions for the Aircraft Radar skill, in the Amazon Alexa app.'
 const NO_ADDRESS = "It looks like you don't have an address set. Please set an address for this Echo, in the Amazon Alexa app."
-const LOCATION_FAILURE = "There was an error finding your location. Please enable Device Address permissions for the Aircraft Radar skill, and set an address for this Echo, in the Amazon Alexa app."
+const LOCATION_FAILURE = 'There was an error finding your location. Please enable Device Address permissions for the Aircraft Radar skill, and set an address for this Echo, in the Amazon Alexa app.'
 
 const MAX_NEARBY = 3
 const MAX_CONTINUE = 4
@@ -42,20 +43,20 @@ function appendModelFromAircraft(response, ac, addMilitaryDesc) {
   modelStr = modelStr.replace('GULFSTREAM', 'Gulfstream')
   modelStr = modelStr.replace('BOMBARDIER', 'Bombardier')
 
-  if (ac.isHelicopter && modelStr.indexOf("helicopter") === -1) {
-    modelStr += " helicopter"
+  if (ac.isHelicopter && modelStr.indexOf('helicopter') === -1) {
+    modelStr += ' helicopter'
   }
 
   modelStr = modelStr.trim()
 
   if (ac.isMilitary && addMilitaryDesc) {
-    modelStr = 'military ' + modelStr
+    modelStr = `military ${modelStr}`
   }
 
   if ((/^[aeiou]/i).test(modelStr)) {
-    modelStr = 'an ' + modelStr
+    modelStr = `an ${modelStr}`
   } else {
-    modelStr = 'a ' + modelStr
+    modelStr = `a ${modelStr}`
   }
 
   response.append(modelStr, ssmlFromModel(modelStr))
@@ -107,8 +108,6 @@ function ssmlFromModel(modelStr) {
 }
 
 function fmtAirport(airportStr) {
-  airportStr = airportStr.replace(', United States', '')
-
   // remove leading code, ie. "KDTW"
   let strings = airportStr.split(' ')
   strings.splice(0, 1)
@@ -137,15 +136,15 @@ function fmtDistance(distance) {
 
   if (distance < 5) {
     return round_dec(distance, 1)
-  } else {
-    return Math.round(distance)
   }
+  return Math.round(distance)
+
 }
 
 function appendAltFromAircraft(response, ac) {
   if (ac.altitude) {
     response.append('at ')
-    response.append(ac.altitude + ' feet,', '<say-as interpret-as="unit">' + ac.altitude + 'ft</say-as>,')
+    response.append(`${ac.altitude} feet,`, `<say-as interpret-as="unit">${ac.altitude}ft</say-as>,`)
   }
 }
 
@@ -153,18 +152,18 @@ function appendAircraftDetails(response, ac, addMilitaryDesc) {
   appendModelFromAircraft(response, ac, addMilitaryDesc)
 
   if (ac.from) {
-    response.append(" from " + fmtAirport(ac.from))
+    response.append(` from ${fmtAirport(ac.from)}`)
   }
 
   response.append(', ')
-  response.append(fmtDistance(ac.userDistanceMi) + ' miles ' + AvFormat.cardinal(ac.userBearing, "away") + ',')
+  response.append(`${fmtDistance(ac.userDistanceMi)} miles ${AvFormat.cardinal(ac.userBearing, 'away')},`)
   response.space()
   appendAltFromAircraft(response, ac)
   response.space()
-  response.append('heading ' + AvFormat.cardinal(ac.trak, null))
+  response.append(`heading ${AvFormat.cardinal(ac.trak, null)}`)
 
   if (ac.callsign && !ac.callSus) {
-    response.append(", with callsign " + ac.callsign)
+    response.append(`, with callsign ${ac.callsign}`)
   }
 }
 
@@ -174,7 +173,7 @@ function singleAircraftOutput(response, ac, position, type) {
 
   response.setThumbnailPromise(ADSB.thumbnailURL(ac))
 
-  response.append('The ' + position + ' ' + type + ' is')
+  response.append(`The ${position} ${type} is`)
   response.space()
   verboseAircraftOutput(response, ac)
 }
@@ -182,34 +181,34 @@ function singleAircraftOutput(response, ac, position, type) {
 function verboseAircraftOutput(response, ac) {
   appendModelFromAircraft(response, ac, true)
   response.append(', ')
-  response.append(fmtDistance(ac.userDistanceMi) + ' miles ' + AvFormat.cardinal(ac.userBearing, "away") + ',')
+  response.append(`${fmtDistance(ac.userDistanceMi)} miles ${AvFormat.cardinal(ac.userBearing, 'away')},`)
   response.space()
   appendAltFromAircraft(response, ac)
   response.space()
-  response.append('heading ' + AvFormat.cardinal(ac.trak, null))
+  response.append(`heading ${AvFormat.cardinal(ac.trak, null)}`)
 
   if (ac.from && ac.to) {
-    response.append(", en route from " + fmtAirport(ac.from))
+    response.append(`, en route from ${fmtAirport(ac.from)}`)
 
     if (ac.from !== ac.to) {
-      response.append(", to " + fmtAirport(ac.to))
+      response.append(`, to ${fmtAirport(ac.to)}`)
     }
   } else if (ac.from) {
-    response.append(", from " + fmtAirport(ac.from))
+    response.append(`, from ${fmtAirport(ac.from)}`)
   }
 
   if (ac.callsign && !ac.callSus) {
-    response.append(", with callsign " + ac.callsign + " and registration")
+    response.append(`, with callsign ${ac.callsign} and registration`)
   } else {
-    response.append(", with registration")
+    response.append(', with registration')
   }
 
   response.append(' ', ': ')
-  console.log("[VERBOSE DEBUG] dealing with aircraft reg:", ac.registration)
+  console.log('[VERBOSE DEBUG] dealing with aircraft reg:', ac.registration)
   if (ac.registration !== null && ac.registration !== undefined) {
-    response.append(ac.registration, '<prosody rate="slow">' + AvFormat.icaoStr(ac.registration) +'</prosody>')
+    response.append(ac.registration, `<prosody rate="slow">${AvFormat.icaoStr(ac.registration)}</prosody>`)
   } else {
-    response.append("unknown")
+    response.append('unknown')
   }
   response.append('.')
 }
@@ -219,32 +218,32 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
   // [airport], Z miles A, at X feet, heading Y; …
 
   if (!acList.length) {
-    response.append("No " + TypeFilter.string(typeFilter) + " are " + position + ".")
-    return
+    response.append(`No ${TypeFilter.string(typeFilter)} are ${position}.`)
+    return []
   }
 
   if (acList.length === limit + 1) {
     limit += 1
   }
 
-  response.append(acList.length + ' ')
+  response.append(`${acList.length} `)
 
   if (acList.length === 1) {
-    response.append(TypeFilter.singularString(typeFilter) + ' is ' + position + ': ')
+    response.append(`${TypeFilter.singularString(typeFilter)} is ${position}: `)
     verboseAircraftOutput(response, acList[0])
     return []
-  } else {
-    response.append(TypeFilter.string(typeFilter) + ' are ' + position)
   }
+  response.append(`${TypeFilter.string(typeFilter)} are ${position}`)
+
 
   if (acList.length > limit) {
     response.append('. The nearest are')
   }
 
   response.append(': ')
-  let continuationAircraft = []
+  const continuationAircraft = []
 
-  acList.forEach(function(ac, idx, list) {
+  acList.forEach((ac, idx) => {
     // A [model] from [airport] Z miles A at X feet heading Y; …
     if (idx >= limit) {
       continuationAircraft.push(ac)
@@ -287,11 +286,11 @@ function getDeviceLocation(ctx) {
   // authorized your skill to access this information. In this case, you should prompt them
   // that you don't have permissions to retrieve their address.
   if (!consentToken && !envMockLocation && !requestMockLocation) {
-    ctx.emit(":tellWithPermissionCard", NOTIFY_MISSING_PERMISSIONS, PERMISSIONS)
+    ctx.emit(':tellWithPermissionCard', NOTIFY_MISSING_PERMISSIONS, PERMISSIONS)
     return Promise.reject(new SentPermissionsCardError())
   }
 
-  let address
+  let address = {}
 
   if (envMockLocation || requestMockLocation) {
     const MockLocations = require('./mock-locations')
@@ -308,32 +307,32 @@ function getDeviceLocation(ctx) {
 
     address = alexaDeviceAddressClient.getFullAddress().then((addressResponse) => {
       switch(addressResponse.statusCode) {
-        case 200:
-          return addressResponse.address
-        case 204:
-          // This likely means that the user didn't have their address set via the companion app.
-          console.log("[Address] Successfully requested from device address API, but no address was returned.")
-          ctx.emit(":tell", NO_ADDRESS)
-          return Promise.reject(new SentNoAddressMessageError())
-        case 403:
-          console.log("[Address] The consent token we had wasn't authorized to access the user's address.")
-          ctx.emit(":tellWithPermissionCard", NOTIFY_MISSING_PERMISSIONS, PERMISSIONS)
-          return Promise.reject(new SentPermissionsCardError())
-        default:
-          console.log("[Address] Unsuccessful address query.", addressResponse)
-          ctx.emit(":tell", LOCATION_FAILURE)
-          return Promise.reject(new SentLocationError())
+      case 200:
+        return addressResponse.address
+      case 204:
+        // This likely means that the user didn't have their address set via the companion app.
+        console.log('[Address] Successfully requested from device address API, but no address was returned.')
+        ctx.emit(':tell', NO_ADDRESS)
+        return Promise.reject(new SentNoAddressMessageError())
+      case 403:
+        console.log("[Address] The consent token we had wasn't authorized to access the user's address.")
+        ctx.emit(':tellWithPermissionCard', NOTIFY_MISSING_PERMISSIONS, PERMISSIONS)
+        return Promise.reject(new SentPermissionsCardError())
+      default:
+        console.log('[Address] Unsuccessful address query.', addressResponse)
+        ctx.emit(':tell', LOCATION_FAILURE)
+        return Promise.reject(new SentLocationError())
       }
     })
   }
 
-  return address.then(function(address) {
-    console.log("[Address] Got address:", address)
+  return address.then((address) => {
+    console.log('[Address] Got address:', address)
     let addressStr = ''
     const keys = ['addressLine1', 'addressLine2', 'addressLine3', 'city', 'districtOrCounty', 'stateOrRegion', 'postalCode', 'countryCode']
     keys.forEach((key) => {
       if (address[key]) {
-        addressStr += address[key] + ', '
+        addressStr += `${address[key]}, `
       }
     })
     return GeocodeService.geocode(addressStr)
@@ -351,73 +350,75 @@ const TypeFilter = {
   Jets: 2,
   Military: 3,
 
-  string: function(typeFilter) {
+  string(typeFilter) {
     switch (typeFilter) {
-      case TypeFilter.Helicopters:
-        return "helicopters"
-      case TypeFilter.Jets:
-        return "jets"
-      case TypeFilter.Military:
-        return "military aircraft"
-      default:
-        return "aircraft"
+    case TypeFilter.Helicopters:
+      return 'helicopters'
+    case TypeFilter.Jets:
+      return 'jets'
+    case TypeFilter.Military:
+      return 'military aircraft'
+    default:
+      return 'aircraft'
     }
   },
 
-  singularString: function(typeFilter) {
+  singularString(typeFilter) {
     switch (typeFilter) {
-      case TypeFilter.Helicopters:
-        return "helicopter"
-      case TypeFilter.Jets:
-        return "jet"
-      case TypeFilter.Military:
-        return "military aircraft"
-      default:
-        return "aircraft"
+    case TypeFilter.Helicopters:
+      return 'helicopter'
+    case TypeFilter.Jets:
+      return 'jet'
+    case TypeFilter.Military:
+      return 'military aircraft'
+    default:
+      return 'aircraft'
     }
   }
 }
 
 function queryHandler(ctx, mode, typeFilter, title) {
-  console.log("[Query Handler] Handling query for mode", mode, "; type filter", typeFilter)
+  console.log('[Query Handler] Handling query for mode', mode, '; type filter', typeFilter)
 
   const location = getDeviceLocation(ctx)
-    .catch(e => Promise.reject(new GeocodeError()))
+    .catch(e => Promise.reject(new GeocodeError(e)))
 
   const acList = location.then((location) => {
-    let acFilters = {}
+    const acFilters = {}
     switch (typeFilter) {
-      case TypeFilter.Helicopters:
-        acFilters[ADSB.Filter.Helicopters] = true
-        break
-      case TypeFilter.Jets:
-        acFilters[ADSB.Filter.Jets] = true
-        break
-      case TypeFilter.Military:
-        acFilters[ADSB.Filter.Military] = true
-        break
+    case TypeFilter.Helicopters:
+      acFilters[ADSB.Filter.Helicopters] = true
+      break
+    case TypeFilter.Jets:
+      acFilters[ADSB.Filter.Jets] = true
+      break
+    case TypeFilter.Military:
+      acFilters[ADSB.Filter.Military] = true
+      break
+    default:
+      break
     }
     return ADSB.query(location, acFilters, SkyView.nearby)
   })
 
-  Promise.all([location, acList]).then(function(values) {
+  Promise.all([location, acList]).then((values) => {
     const acList = values[1]
     const response = new Response(title)
 
     if (mode === Mode.Single) {
       if (!acList.length) {
-        response.append("No " + TypeFilter.string(typeFilter) + " are nearby.")
+        response.append(`No ${TypeFilter.string(typeFilter)} are nearby.`)
       } else {
         const ac = acList[0]
-        singleAircraftOutput(response, ac, "nearest", TypeFilter.singularString(typeFilter))
+        singleAircraftOutput(response, ac, 'nearest', TypeFilter.singularString(typeFilter))
       }
     } else {
       // Mode.Multi
       const addMilitaryDesc = (typeFilter !== TypeFilter.Military) // describe planes as "military" iff user didn't filter to military planes only
-      const leftovers = multiAircraftOutput(response, acList, "nearby", typeFilter, MAX_NEARBY, addMilitaryDesc)
+      const leftovers = multiAircraftOutput(response, acList, 'nearby', typeFilter, MAX_NEARBY, addMilitaryDesc)
 
       if (leftovers && leftovers.length > 0) {
-        response.setNeedsMore("Do you want to hear more?")
+        response.setNeedsMore('Do you want to hear more?')
         ctx.attributes['addMilitaryDesc'] = addMilitaryDesc
         ctx.attributes['leftovers'] = leftovers.map(ac => ac.toJSON())
         ctx.attributes['title'] = title
@@ -426,20 +427,20 @@ function queryHandler(ctx, mode, typeFilter, title) {
 
     response.respond(ctx)
   })
-  .catch(function(err) {
+    .catch((err) => {
     // don't act on errors which indicate some error card has already been sent:
-    if (err instanceof SentPermissionsCardError || err instanceof SentNoAddressMessageError || err instanceof SentLocationError) {
-      return
-    }
+      if (err instanceof SentPermissionsCardError || err instanceof SentNoAddressMessageError || err instanceof SentLocationError) {
+        return
+      }
 
-    if (err.ssmlMessage) {
-      ctx.response.speak(err.ssmlMessage());
-    } else {
-      console.log('[Query Handler] Unhandled error in promise chain:', err)
-      ctx.response.speak(ERROR_MESSAGE);
-    }
-    ctx.emit(':responseReady');
-  });
+      if (err.ssmlMessage) {
+        ctx.response.speak(err.ssmlMessage());
+      } else {
+        console.log('[Query Handler] Unhandled error in promise chain:', err)
+        ctx.response.speak(ERROR_MESSAGE);
+      }
+      ctx.emit(':responseReady');
+    });
 }
 
 function queryContinuationHandler(ctx) {
@@ -449,10 +450,10 @@ function queryContinuationHandler(ctx) {
   const response = new Response(title)
 
   const limit = MAX_CONTINUE
-  let leftovers = []
+  const leftovers = []
 
   response.append('There is ')
-  acList.forEach(function(ac, idx, list) {
+  acList.forEach((ac, idx) => {
     if (idx >= limit) {
       leftovers.push(ac)
       return
@@ -469,72 +470,72 @@ function queryContinuationHandler(ctx) {
 
   ctx.attributes['leftovers'] = leftovers
   if (leftovers.length > 0 && leftovers.length <= limit) {
-    response.setNeedsMore("Do you want to hear the rest?")
+    response.setNeedsMore('Do you want to hear the rest?')
   } else if (leftovers.length > limit) {
-    response.setNeedsMore("Do you want to hear more?")
+    response.setNeedsMore('Do you want to hear more?')
   }
   response.respond(ctx)
 }
 
 const handlers = {
-  'LaunchRequest': function () {
-    console.log("Handling LaunchRequest" )
+  'LaunchRequest' () {
+    console.log('Handling LaunchRequest' )
     this.emit('Nearby_Aircraft');
   },
-  'SessionEndedRequest': function() {
-    console.log("Received SessionEndedRequest")
+  'SessionEndedRequest'() {
+    console.log('Received SessionEndedRequest')
   },
-  'Nearby_Aircraft': function () {
-    console.log("Handling Nearby_Aircraft")
-    queryHandler(this, Mode.Multi, TypeFilter.All, "Nearby Aircraft")
+  'Nearby_Aircraft' () {
+    console.log('Handling Nearby_Aircraft')
+    queryHandler(this, Mode.Multi, TypeFilter.All, 'Nearby Aircraft')
   },
-  'Nearest_Aircraft': function () {
-    console.log("Handling Nearest_Aircraft")
-    queryHandler(this, Mode.Single, TypeFilter.All, "Nearby Aircraft")
+  'Nearest_Aircraft' () {
+    console.log('Handling Nearest_Aircraft')
+    queryHandler(this, Mode.Single, TypeFilter.All, 'Nearby Aircraft')
   },
-  'Nearest_Jet': function () {
-    console.log("Handling Nearest_Jet")
-    queryHandler(this, Mode.Single, TypeFilter.Jets, "Nearby Jets")
+  'Nearest_Jet' () {
+    console.log('Handling Nearest_Jet')
+    queryHandler(this, Mode.Single, TypeFilter.Jets, 'Nearby Jets')
   },
-  'Nearby_Jets': function () {
-    console.log("Handling Nearby_Jets")
-    queryHandler(this, Mode.Multi, TypeFilter.Jets, "Nearby Jets")
+  'Nearby_Jets' () {
+    console.log('Handling Nearby_Jets')
+    queryHandler(this, Mode.Multi, TypeFilter.Jets, 'Nearby Jets')
   },
-  'Nearby_Helicopters': function () {
-    console.log("Handling Nearby_Helicopters")
-    queryHandler(this, Mode.Multi, TypeFilter.Helicopters, "Nearby Helicopters")
+  'Nearby_Helicopters' () {
+    console.log('Handling Nearby_Helicopters')
+    queryHandler(this, Mode.Multi, TypeFilter.Helicopters, 'Nearby Helicopters')
   },
-  'Nearest_Helicopter': function () {
-    console.log("Handling Nearest_Helicopter")
-    queryHandler(this, Mode.Single, TypeFilter.Helicopters, "Nearby Helicopters")
+  'Nearest_Helicopter' () {
+    console.log('Handling Nearest_Helicopter')
+    queryHandler(this, Mode.Single, TypeFilter.Helicopters, 'Nearby Helicopters')
   },
-  'Nearby_Military': function () {
-    console.log("Handling Nearby_Military")
-    queryHandler(this, Mode.Multi, TypeFilter.Military, "Nearby Military Aircraft")
+  'Nearby_Military' () {
+    console.log('Handling Nearby_Military')
+    queryHandler(this, Mode.Multi, TypeFilter.Military, 'Nearby Military Aircraft')
   },
-  'AMAZON.NoIntent': function () {
-    console.log("Handling AMAZON.NoIntent")
+  'AMAZON.NoIntent' () {
+    console.log('Handling AMAZON.NoIntent')
     this.emit(':responseReady');
   },
-  'AMAZON.YesIntent': function () {
-    console.log("Handling AMAZON.YesIntent")
+  'AMAZON.YesIntent' () {
+    console.log('Handling AMAZON.YesIntent')
     if (this.attributes['leftovers'] && this.attributes['leftovers'].length > 0) {
       queryContinuationHandler(this)
     } else {
       this.emit('Nearby_Aircraft');
     }
   },
-  'AMAZON.HelpIntent': function () {
-    console.log("Handling AMAZON.HelpIntent")
+  'AMAZON.HelpIntent' () {
+    console.log('Handling AMAZON.HelpIntent')
     this.response.speak(HELP_MESSAGE).listen(HELP_REPROMPT);
     this.emit(':responseReady');
   },
-  'AMAZON.CancelIntent': function () {
-    console.log("Handling AMAZON.CancelIntent")
+  'AMAZON.CancelIntent' () {
+    console.log('Handling AMAZON.CancelIntent')
     this.emit(':responseReady');
   },
-  'AMAZON.StopIntent': function () {
-    console.log("Handling AMAZON.StopIntent")
+  'AMAZON.StopIntent' () {
+    console.log('Handling AMAZON.StopIntent')
     this.emit(':responseReady');
   },
 };
