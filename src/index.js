@@ -1,11 +1,11 @@
 /* eslint-disable no-use-before-define */
 'use strict'
 
-const Alexa = require('alexa-sdk');
+const Alexa = require('alexa-sdk')
 const ADSB = require('./adsb-query')
 const AvFormat = require('./aviation-formatting')
 const SkyView = require('./skyview')
-const AlexaDeviceAddressClient = require('./AlexaDeviceAddressClient');
+const AlexaDeviceAddressClient = require('./AlexaDeviceAddressClient')
 const GeocodeService = require('./geocode')
 const Response = require('./alexa-response-builder')
 
@@ -24,7 +24,7 @@ const MAX_NEARBY = 3
 const MAX_CONTINUE = 4
 
 function appendModelFromAircraft(response, ac, addMilitaryDesc) {
-  let modelStr = ac.modelDescription;
+  let modelStr = ac.modelDescription
 
   modelStr = modelStr.replace(/^[0-9][0-9][0-9][0-9]/, '')
 
@@ -129,16 +129,15 @@ function fmtAirport(airportStr) {
 }
 
 function fmtDistance(distance) {
-  const round_dec = function(value, precision) {
-    const multiplier = Math.pow(10, precision || 0);
-    return Math.round(value * multiplier) / multiplier;
+  const roundToDecimalPrecision = function(value, precision) {
+    const multiplier = Math.pow(10, precision || 0)
+    return Math.round(value * multiplier) / multiplier
   }
 
   if (distance < 5) {
-    return round_dec(distance, 1)
+    return roundToDecimalPrecision(distance, 1)
   }
   return Math.round(distance)
-
 }
 
 function appendAltFromAircraft(response, ac) {
@@ -235,7 +234,6 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
   }
   response.append(`${TypeFilter.string(typeFilter)} are ${position}`)
 
-
   if (acList.length > limit) {
     response.append('. The nearest are')
   }
@@ -250,13 +248,13 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
       return
     }
 
-    const atEnd = (idx === limit-1 || idx === acList.length-1)
+    const atEnd = (idx === limit - 1 || idx === acList.length - 1)
     if (atEnd) {
       response.append(' and ')
     }
     appendAircraftDetails(response, ac, addMilitaryDesc)
     response.append(atEnd ? '.' : '; ')
-  });
+  })
 
   return continuationAircraft
 }
@@ -266,9 +264,11 @@ class SentPermissionsCardError extends Error {}
 class SentNoAddressMessageError extends Error {}
 
 class GeocodeError extends Error {
+
   ssmlMessage() {
     return "Sorry, I couldn't pinpoint your location. Please verify that this Echo's address is set correctly, then try again."
   }
+
 }
 
 function getDeviceLocation(ctx) {
@@ -306,7 +306,7 @@ function getDeviceLocation(ctx) {
     const alexaDeviceAddressClient = new AlexaDeviceAddressClient(apiEndpoint, deviceId, consentToken)
 
     address = alexaDeviceAddressClient.getFullAddress().then((addressResponse) => {
-      switch(addressResponse.statusCode) {
+      switch (addressResponse.statusCode) {
       case 200:
         return addressResponse.address
       case 204:
@@ -341,7 +341,7 @@ function getDeviceLocation(ctx) {
 
 const Mode = {
   Single: 0,
-  Multi: 1
+  Multi: 1,
 }
 
 const TypeFilter = {
@@ -374,7 +374,7 @@ const TypeFilter = {
     default:
       return 'aircraft'
     }
-  }
+  },
 }
 
 function queryHandler(ctx, mode, typeFilter, title) {
@@ -434,13 +434,13 @@ function queryHandler(ctx, mode, typeFilter, title) {
       }
 
       if (err.ssmlMessage) {
-        ctx.response.speak(err.ssmlMessage());
+        ctx.response.speak(err.ssmlMessage())
       } else {
         console.log('[Query Handler] Unhandled error in promise chain:', err)
-        ctx.response.speak(ERROR_MESSAGE);
+        ctx.response.speak(ERROR_MESSAGE)
       }
-      ctx.emit(':responseReady');
-    });
+      ctx.emit(':responseReady')
+    })
 }
 
 function queryContinuationHandler(ctx) {
@@ -460,13 +460,13 @@ function queryContinuationHandler(ctx) {
     }
 
     // A [model] from [airport] Z miles A at X feet heading Y; …
-    const atEnd = (idx === limit-1 || idx === acList.length-1)
+    const atEnd = (idx === limit - 1 || idx === acList.length - 1)
     if (atEnd) {
       response.append(' and ')
     }
     appendAircraftDetails(response, ac, addMilitaryDesc)
     response.append(atEnd ? '.' : '; ')
-  });
+  })
 
   ctx.attributes['leftovers'] = leftovers
   if (leftovers.length > 0 && leftovers.length <= limit) {
@@ -478,71 +478,71 @@ function queryContinuationHandler(ctx) {
 }
 
 const handlers = {
-  'LaunchRequest' () {
-    console.log('Handling LaunchRequest' )
-    this.emit('Nearby_Aircraft');
+  'LaunchRequest'() {
+    console.log('Handling LaunchRequest')
+    this.emit('Nearby_Aircraft')
   },
   'SessionEndedRequest'() {
     console.log('Received SessionEndedRequest')
   },
-  'Nearby_Aircraft' () {
+  'Nearby_Aircraft'() {
     console.log('Handling Nearby_Aircraft')
     queryHandler(this, Mode.Multi, TypeFilter.All, 'Nearby Aircraft')
   },
-  'Nearest_Aircraft' () {
+  'Nearest_Aircraft'() {
     console.log('Handling Nearest_Aircraft')
     queryHandler(this, Mode.Single, TypeFilter.All, 'Nearby Aircraft')
   },
-  'Nearest_Jet' () {
+  'Nearest_Jet'() {
     console.log('Handling Nearest_Jet')
     queryHandler(this, Mode.Single, TypeFilter.Jets, 'Nearby Jets')
   },
-  'Nearby_Jets' () {
+  'Nearby_Jets'() {
     console.log('Handling Nearby_Jets')
     queryHandler(this, Mode.Multi, TypeFilter.Jets, 'Nearby Jets')
   },
-  'Nearby_Helicopters' () {
+  'Nearby_Helicopters'() {
     console.log('Handling Nearby_Helicopters')
     queryHandler(this, Mode.Multi, TypeFilter.Helicopters, 'Nearby Helicopters')
   },
-  'Nearest_Helicopter' () {
+  'Nearest_Helicopter'() {
     console.log('Handling Nearest_Helicopter')
     queryHandler(this, Mode.Single, TypeFilter.Helicopters, 'Nearby Helicopters')
   },
-  'Nearby_Military' () {
+  'Nearby_Military'() {
     console.log('Handling Nearby_Military')
     queryHandler(this, Mode.Multi, TypeFilter.Military, 'Nearby Military Aircraft')
   },
-  'AMAZON.NoIntent' () {
+  'AMAZON.NoIntent'() {
     console.log('Handling AMAZON.NoIntent')
-    this.emit(':responseReady');
+    this.emit(':responseReady')
   },
-  'AMAZON.YesIntent' () {
+  'AMAZON.YesIntent'() {
     console.log('Handling AMAZON.YesIntent')
     if (this.attributes['leftovers'] && this.attributes['leftovers'].length > 0) {
       queryContinuationHandler(this)
     } else {
-      this.emit('Nearby_Aircraft');
+      this.emit('Nearby_Aircraft')
     }
   },
-  'AMAZON.HelpIntent' () {
+  'AMAZON.HelpIntent'() {
     console.log('Handling AMAZON.HelpIntent')
-    this.response.speak(HELP_MESSAGE).listen(HELP_REPROMPT);
-    this.emit(':responseReady');
+    this.response.speak(HELP_MESSAGE).listen(HELP_REPROMPT)
+    this.emit(':responseReady')
   },
-  'AMAZON.CancelIntent' () {
+  'AMAZON.CancelIntent'() {
     console.log('Handling AMAZON.CancelIntent')
-    this.emit(':responseReady');
+    this.emit(':responseReady')
   },
-  'AMAZON.StopIntent' () {
+  'AMAZON.StopIntent'() {
     console.log('Handling AMAZON.StopIntent')
-    this.emit(':responseReady');
+    this.emit(':responseReady')
   },
-};
+}
 
-exports.handler = function (event, context, callback) {
-  const alexa = Alexa.handler(event, context, callback);
-  alexa.appId = APP_ID;
-  alexa.registerHandlers(handlers);
-  alexa.execute();
-};
+exports.handler = function handler(event, context, callback) {
+  const alexa = Alexa.handler(event, context, callback)
+  alexa.appId = APP_ID
+  alexa.registerHandlers(handlers)
+  alexa.execute()
+}

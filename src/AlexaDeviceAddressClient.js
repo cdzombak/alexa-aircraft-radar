@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const Https = require('https');
+const Https = require('https')
 
 /**
  * This is a small wrapper client for the Alexa Address API.
@@ -16,9 +16,9 @@ class AlexaDeviceAddressClient {
      * @param consentToken valid consent token.
      */
   constructor(apiEndpoint, deviceId, consentToken) {
-    this.deviceId = deviceId;
-    this.consentToken = consentToken;
-    this.endpoint = apiEndpoint.replace(/^https?:\/\//i, '');
+    this.deviceId = deviceId
+    this.consentToken = consentToken
+    this.endpoint = apiEndpoint.replace(/^https?:\/\//i, '')
   }
 
   /**
@@ -28,11 +28,11 @@ class AlexaDeviceAddressClient {
      * @return {Promise} promise for the request in flight.
      */
   getFullAddress() {
-    const options = this.__getRequestOptions(`/v1/devices/${this.deviceId}/settings/address`);
+    const options = this.__getRequestOptions(`/v1/devices/${this.deviceId}/settings/address`)
 
     return new Promise((fulfill, reject) => {
-      this.__handleDeviceAddressApiRequest(options, fulfill, reject);
-    });
+      this.__handleDeviceAddressApiRequest(options, fulfill, reject)
+    })
   }
 
   /**
@@ -42,12 +42,11 @@ class AlexaDeviceAddressClient {
      * @return {Promise} promise for the request in flight.
      */
   getCountryAndPostalCode() {
-    const options = this.__getRequestOptions(
-      `/v1/devices/${this.deviceId}/settings/address/countryAndPostalCode`);
+    const options = this.__getRequestOptions(`/v1/devices/${this.deviceId}/settings/address/countryAndPostalCode`)
 
     return new Promise((fulfill, reject) => {
-      this.__handleDeviceAddressApiRequest(options, fulfill, reject);
-    });
+      this.__handleDeviceAddressApiRequest(options, fulfill, reject)
+    })
   }
 
   /**
@@ -61,22 +60,22 @@ class AlexaDeviceAddressClient {
   // eslint-disable-next-line class-methods-use-this
   __handleDeviceAddressApiRequest(requestOptions, fulfill, reject) {
     Https.get(requestOptions, (response) => {
-      console.log(`[AlexaDeviceAddressClient] Device Address API responded with status code: ${response.statusCode}`);
+      console.log(`[AlexaDeviceAddressClient] Device Address API responded with status code: ${response.statusCode}`)
 
       response.on('data', (data) => {
-        const responsePayloadObject = JSON.parse(data);
+        const responsePayloadObject = JSON.parse(data)
 
         const deviceAddressResponse = {
           statusCode: response.statusCode,
-          address: responsePayloadObject
-        };
+          address: responsePayloadObject,
+        }
 
-        fulfill(deviceAddressResponse);
-      });
+        fulfill(deviceAddressResponse)
+      })
     }).on('error', (e) => {
-      console.error(e);
-      reject();
-    });
+      console.error(e)
+      reject()
+    })
   }
 
   /**
@@ -90,11 +89,10 @@ class AlexaDeviceAddressClient {
       hostname: this.endpoint,
       path,
       method: 'GET',
-      'headers': {
-        'Authorization': `Bearer ${this.consentToken}`
-      }
-    };
+      headers: { Authorization: `Bearer ${this.consentToken}` },
+    }
   }
+
 }
 
-module.exports = AlexaDeviceAddressClient;
+module.exports = AlexaDeviceAddressClient

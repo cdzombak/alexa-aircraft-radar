@@ -27,9 +27,7 @@ function toTitleCase(str) {
     .join(' ')
 }
 
-const ManufacturerBlacklist = [
-  'AVIONES COLOMBIA'
-]
+const ManufacturerBlacklist = ['AVIONES COLOMBIA']
 
 // const ManufacturerNameFixups = {
 //   "AIRBUS": "Airbus",
@@ -39,6 +37,7 @@ const ManufacturerBlacklist = [
 // TODO(cdzombak): the manufacturer & model name cleanup in here needs a lot of work, and probably better data sources.
 
 class Aircraft {
+
   // Construct a new Aircraft instance based on the given API representation of an aircraft.
   //
   // The resulting instance works when given either a new or old style API response.
@@ -52,9 +51,7 @@ class Aircraft {
   }
 
   toJSON() {
-    return {
-      apiDict: this._apiDict
-    }
+    return { apiDict: this._apiDict }
   }
 
   _numberFromApiDict(key1, key2) {
@@ -64,7 +61,6 @@ class Aircraft {
       return Number(this._apiDict[key2])
     }
     return undefined
-
   }
 
   _stringFromApiDict(key1, key2) {
@@ -178,8 +174,7 @@ class Aircraft {
     }
     const metadata = AircraftTypes
       .find(t => t.Designator === this.icaoType
-        && ManufacturerBlacklist.find(c => c === t.ManufacturerCode) === undefined
-      )
+        && ManufacturerBlacklist.find(c => c === t.ManufacturerCode) === undefined)
     if (metadata === undefined) {
       this._memoizedTypeMetadata = null
       return undefined
@@ -259,6 +254,7 @@ class Aircraft {
     }
     return 'unknown aircraft'
   }
+
 }
 
 module.exports = Aircraft

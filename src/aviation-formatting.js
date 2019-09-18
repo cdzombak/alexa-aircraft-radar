@@ -1,14 +1,14 @@
-'use strict';
+'use strict'
 
 // Aviation formatting for Alexa/SSML.
 
 // Convert the given angle to cardinal direction word.
-// Use badInputValue when cardinal is not in 0-360; pass `null` to get a default.
-exports.cardinal = function(angle, badInputValue) {
+// Use badInputValue when angle is not in 0-360; pass `null` to get a default.
+exports.cardinal = function cardinal(angle, badInputValue) {
   const directions = 8
 
   const degree = 360 / directions
-  angle = angle + degree/2
+  angle += degree / 2
 
   if (angle >= 0 && angle < degree) return 'north'
   if (angle >= degree && angle < 2 * degree) return 'northeast'
@@ -26,7 +26,7 @@ exports.cardinal = function(angle, badInputValue) {
 
 // SSML ICAO:
 
-exports.icaoChar = function(ch) {
+exports.icaoChar = function icaoChar(ch) {
   switch (ch.toLowerCase()) {
   case 'a': return 'ALPHA'
   case 'b': return 'BRAVO'
@@ -69,9 +69,9 @@ exports.icaoChar = function(ch) {
   }
 }
 
-exports.icaoStr = function(str) {
+exports.icaoStr = function icaoStr(str) {
   str = String(str)
-  let result = '';
+  let result = ''
 
   for (let i = 0, len = str.length; i < len; i++) {
     const icao = exports.icaoChar(str[i])
