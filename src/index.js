@@ -265,6 +265,7 @@ class SentNoAddressMessageError extends Error {}
 
 class GeocodeError extends Error {
 
+  // eslint-disable-next-line class-methods-use-this
   ssmlMessage() {
     return "Sorry, I couldn't pinpoint your location. Please verify that this Echo's address is set correctly, then try again."
   }
@@ -293,7 +294,7 @@ function getDeviceLocation(ctx) {
   let address = {}
 
   if (envMockLocation || requestMockLocation) {
-    const MockLocations = require('./mock-locations')
+    const MockLocations = require('./mock-locations') // eslint-disable-line global-require
     const mockLocation = requestMockLocation ? requestMockLocation : envMockLocation
     if (mockLocation === 'invalid') {
       address = Promise.resolve(MockLocations.INVALID_LOCATION)
