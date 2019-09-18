@@ -60,7 +60,7 @@ class AlexaDeviceAddressClient {
   // eslint-disable-next-line class-methods-use-this
   __handleDeviceAddressApiRequest(requestOptions, fulfill, reject) {
     Https.get(requestOptions, (response) => {
-      console.log(`[AlexaDeviceAddressClient] Device Address API responded with status code: ${response.statusCode}`)
+      console.log('[AlexaDeviceAddressClient] Device Address API responded with status code: ', response.statusCode)
 
       response.on('data', (data) => {
         const responsePayloadObject = JSON.parse(data)

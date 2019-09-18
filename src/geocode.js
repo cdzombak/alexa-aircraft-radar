@@ -28,9 +28,7 @@ exports.Location3D = Location3D
 // A geocode service which returns lat/lng _and_ elevation (in feet) for a given string address.
 // https://github.com/cdzombak/geocode-service
 exports.geocode = function geocode(addressStr) {
-  const url = `${'https://location.radarskill.cdzombak.net/api/geocode?'
-    + 'address='}${encodeURIComponent(addressStr)}&`
-    + `key=${encodeURIComponent(process.env.GEOCODE_API_KEY)}`
+  const url = `https://location.radarskill.cdzombak.net/api/geocode?address=${encodeURIComponent(addressStr)}&key=${encodeURIComponent(process.env.GEOCODE_API_KEY)}`
 
   const reqOptions = {
     url,
