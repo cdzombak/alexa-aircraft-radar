@@ -1,4 +1,5 @@
 tmp/*
+!tmp/new-api-resp/
 !tmp/vrs-enums.js
 !tmp/initial-brainstorming.md
 
