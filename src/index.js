@@ -161,7 +161,7 @@ function appendAircraftDetails(response, ac, addMilitaryDesc) {
   response.space()
   response.append(`heading ${AvFormat.cardinal(ac.trak, null)}`)
 
-  if (ac.callsign && !ac.callSus) {
+  if (ac.callsign) {
     response.append(`, with callsign ${ac.callsign}`)
   }
 }
@@ -196,7 +196,7 @@ function verboseAircraftOutput(response, ac) {
     response.append(`, from ${fmtAirport(ac.from)}`)
   }
 
-  if (ac.callsign && !ac.callSus) {
+  if (ac.callsign) {
     response.append(`, with callsign ${ac.callsign} and registration`)
   } else {
     response.append(', with registration')

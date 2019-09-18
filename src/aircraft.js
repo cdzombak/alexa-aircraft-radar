@@ -100,7 +100,14 @@ class Aircraft {
 
   // The callsign. May be missing or undefined.
   get callsign() {
-    return this._stringFromApiDict('Call', 'call')
+    if (this.callSus) {
+      return undefined
+    }
+    const cs = this._stringFromApiDict('Call', 'call')
+    if (cs === this.registration) {
+      return undefined
+    }
+    return cs
   }
 
   // True if the callsign may not be correct.
