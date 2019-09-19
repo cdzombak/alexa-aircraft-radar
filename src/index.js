@@ -23,6 +23,57 @@ const LOCATION_FAILURE = 'There was an error finding your location. Please enabl
 const MAX_NEARBY = 3
 const MAX_CONTINUE = 4
 
+const Mode = {
+  Single: 0,
+  Multi: 1,
+}
+
+const TypeFilter = {
+  All: 0,
+  Helicopters: 1,
+  Jets: 2,
+  Military: 3,
+
+  string(typeFilter) {
+    switch (typeFilter) {
+    case TypeFilter.Helicopters:
+      return 'helicopters'
+    case TypeFilter.Jets:
+      return 'jets'
+    case TypeFilter.Military:
+      return 'military aircraft'
+    default:
+      return 'aircraft'
+    }
+  },
+
+  singularString(typeFilter) {
+    switch (typeFilter) {
+    case TypeFilter.Helicopters:
+      return 'helicopter'
+    case TypeFilter.Jets:
+      return 'jet'
+    case TypeFilter.Military:
+      return 'military aircraft'
+    default:
+      return 'aircraft'
+    }
+  },
+}
+
+class SentLocationError extends Error {}
+class SentPermissionsCardError extends Error {}
+class SentNoAddressMessageError extends Error {}
+
+class GeocodeError extends Error {
+
+  // eslint-disable-next-line class-methods-use-this
+  ssmlMessage() {
+    return "Sorry, I couldn't pinpoint your location. Please verify that this Echo's address is set correctly, then try again."
+  }
+
+}
+
 function appendModelFromAircraft(response, ac, addMilitaryDesc) {
   let modelStr = ac.modelDescription
 
@@ -259,19 +310,6 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
   return continuationAircraft
 }
 
-class SentLocationError extends Error {}
-class SentPermissionsCardError extends Error {}
-class SentNoAddressMessageError extends Error {}
-
-class GeocodeError extends Error {
-
-  // eslint-disable-next-line class-methods-use-this
-  ssmlMessage() {
-    return "Sorry, I couldn't pinpoint your location. Please verify that this Echo's address is set correctly, then try again."
-  }
-
-}
-
 function getDeviceLocation(ctx) {
   const permissions = ctx.event.context.System.user.permissions
   const consentToken = permissions ? permissions.consentToken : null
@@ -340,44 +378,6 @@ function getDeviceLocation(ctx) {
   })
 }
 
-const Mode = {
-  Single: 0,
-  Multi: 1,
-}
-
-const TypeFilter = {
-  All: 0,
-  Helicopters: 1,
-  Jets: 2,
-  Military: 3,
-
-  string(typeFilter) {
-    switch (typeFilter) {
-    case TypeFilter.Helicopters:
-      return 'helicopters'
-    case TypeFilter.Jets:
-      return 'jets'
-    case TypeFilter.Military:
-      return 'military aircraft'
-    default:
-      return 'aircraft'
-    }
-  },
-
-  singularString(typeFilter) {
-    switch (typeFilter) {
-    case TypeFilter.Helicopters:
-      return 'helicopter'
-    case TypeFilter.Jets:
-      return 'jet'
-    case TypeFilter.Military:
-      return 'military aircraft'
-    default:
-      return 'aircraft'
-    }
-  },
-}
-
 function queryHandler(ctx, mode, typeFilter, title) {
   console.log('[Query Handler] Handling query for mode', mode, '; type filter', typeFilter)
 
@@ -427,21 +427,20 @@ function queryHandler(ctx, mode, typeFilter, title) {
     }
 
     response.respond(ctx)
-  })
-    .catch((err) => {
+  }).catch((err) => {
     // don't act on errors which indicate some error card has already been sent:
-      if (err instanceof SentPermissionsCardError || err instanceof SentNoAddressMessageError || err instanceof SentLocationError) {
-        return
-      }
+    if (err instanceof SentPermissionsCardError || err instanceof SentNoAddressMessageError || err instanceof SentLocationError) {
+      return
+    }
 
-      if (err.ssmlMessage) {
-        ctx.response.speak(err.ssmlMessage())
-      } else {
-        console.log('[Query Handler] Unhandled error in promise chain:', err)
-        ctx.response.speak(ERROR_MESSAGE)
-      }
-      ctx.emit(':responseReady')
-    })
+    if (err.ssmlMessage) {
+      ctx.response.speak(err.ssmlMessage())
+    } else {
+      console.log('[Query Handler] Unhandled error in promise chain:', err)
+      ctx.response.speak(ERROR_MESSAGE)
+    }
+    ctx.emit(':responseReady')
+  })
 }
 
 function queryContinuationHandler(ctx) {
@@ -449,7 +448,6 @@ function queryContinuationHandler(ctx) {
   const addMilitaryDesc = ctx.attributes['addMilitaryDesc']
   const title = ctx.attributes['title']
   const response = new Response(title)
-
   const limit = MAX_CONTINUE
   const leftovers = []
 
