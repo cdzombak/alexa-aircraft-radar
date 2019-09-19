@@ -17,6 +17,6 @@ mkdir -p ./products
 rm -f ./products/aircraft-radar.zip
 pushd ./src
 ln -s ../node_modules .
-zip -rq ../products/aircraft-radar.zip ./*.js ./node_modules
+zip -rq ../products/aircraft-radar.zip ./*.js ./*.json ./node_modules
 rm ./node_modules
 popd
