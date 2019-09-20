@@ -99,7 +99,12 @@ exports.query = function query(location, acFilters, skyviewFilter) {
   console.log('[ADSB] ADSBX request: ', url)
 
   return rp(reqOptions)
-    .then(respData => respData['ac'].map(acDict => new AircraftView(acDict, location)))
+    .then((respData) => {
+      if (respData['ac'] === undefined || respData['ac'] === null) {
+        return []
+      }
+      return respData['ac'].map(acDict => new AircraftView(acDict, location))
+    })
     .then(acList => acList.filter(skyviewFilter))
     .then(acList => acList.filter(aircraftFilter(acFilters)))
     .then(acList => acList.sort((a, b) => {

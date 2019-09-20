@@ -268,7 +268,7 @@ function multiAircraftOutput(response, acList, position, typeFilter, limit, addM
   // [airport], Z miles A, at X feet, heading Y; …
 
   if (!acList.length) {
-    response.append(`No ${TypeFilter.string(typeFilter)} are ${position}.`)
+    response.append(`I didn't find any ${TypeFilter.string(typeFilter)} ${position}.`)
     return []
   }
 
@@ -406,7 +406,7 @@ function queryHandler(ctx, mode, typeFilter, title) {
 
     if (mode === Mode.Single) {
       if (!acList.length) {
-        response.append(`No ${TypeFilter.string(typeFilter)} are nearby.`)
+        response.append(`I didn't find any ${TypeFilter.string(typeFilter)} nearby.`)
       } else {
         const ac = acList[0]
         singleAircraftOutput(response, ac, 'nearest', TypeFilter.singularString(typeFilter))
