@@ -342,7 +342,9 @@ function getDeviceLocation(ctx) {
     const apiEndpoint = ctx.event.context.System.apiEndpoint
     const alexaDeviceAddressClient = new AlexaDeviceAddressClient(apiEndpoint, deviceId, consentToken)
 
+    console.time('getDeviceAddress')
     address = alexaDeviceAddressClient.getFullAddress().then((addressResponse) => {
+      console.timeEnd('getDeviceAddress')
       switch (addressResponse.statusCode) {
       case 200:
         return addressResponse.address

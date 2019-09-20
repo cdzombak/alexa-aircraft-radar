@@ -97,21 +97,24 @@ exports.query = function query(location, acFilters, skyviewFilter) {
   }
 
   console.log('[ADSB] ADSBX request: ', url)
+  console.time('adsbxRequest')
 
   return rp(reqOptions)
     .then((respData) => {
+      console.timeEnd('adsbxRequest')
       if (respData['ac'] === undefined || respData['ac'] === null) {
         return []
       }
-      return respData['ac'].map(acDict => new AircraftView(acDict, location))
+      return respData['ac']
+        .map(acDict => new AircraftView(acDict, location))
+        .filter(skyviewFilter)
+        .filter(aircraftFilter(acFilters))
+        .sort((a, b) => {
+          if (a.user3DDistanceKm > b.user3DDistanceKm) return 1
+          else if (b.user3DDistanceKm > a.user3DDistanceKm) return -1
+          return 0
+        })
     })
-    .then(acList => acList.filter(skyviewFilter))
-    .then(acList => acList.filter(aircraftFilter(acFilters)))
-    .then(acList => acList.sort((a, b) => {
-      if (a.user3DDistanceKm > b.user3DDistanceKm) return 1
-      else if (b.user3DDistanceKm > a.user3DDistanceKm) return -1
-      return 0
-    }))
     .then((acList) => {
       console.log('[ADSB] Returning aircraft list: ', acList)
       return acList
@@ -144,8 +147,10 @@ exports.thumbnailURL = function thumbnailURL(ac) {
   }
 
   console.log('[ADSB] Image API request:', url)
+  console.time('imageApiRequest')
 
   return rp(reqOptions).then((response) => {
+    console.timeEnd('imageApiRequest')
     console.log('[ADSB] Image API response:', response)
 
     const thumbnailURL = response.thumbnailURL

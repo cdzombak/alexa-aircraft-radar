@@ -1,7 +1,9 @@
 'use strict'
 
 const Location = require('./location')
+console.time('loadTypeMetadata')
 const AircraftTypes = require('./AircraftTypes.json')
+console.timeEnd('loadTypeMetadata')
 // const AircraftManufacturers = require('./AircraftManufacturers.json')
 
 function toBool(val) {
@@ -179,9 +181,11 @@ class Aircraft {
     if (this._memoizedTypeMetadata !== undefined) {
       return this._memoizedTypeMetadata
     }
+    console.time('findTypeMetadata')
     const metadata = AircraftTypes
       .find(t => t.Designator === this.icaoType
         && ManufacturerBlacklist.find(c => c === t.ManufacturerCode) === undefined)
+    console.timeEnd('findTypeMetadata')
     if (metadata === undefined) {
       this._memoizedTypeMetadata = null
       return undefined

@@ -41,8 +41,10 @@ exports.geocode = function geocode(addressStr) {
     json: 'true',
   }
 
+  console.time('geocodeRequest')
   return rp(reqOptions)
     .then((respData) => {
+      console.timeEnd('geocodeRequest')
       if (!respData.location) {
         throw new Error('Response did not include a location.')
       }
