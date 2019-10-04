@@ -13,9 +13,9 @@ const APP_ID = 'amzn1.ask.skill.aec65dec-e9f5-453e-934e-eb5e53c5de6e'
 const ALL_ADDRESS_PERMISSION = 'read::alexa:device:all:address'
 const PERMISSIONS = [ALL_ADDRESS_PERMISSION]
 
-const HELP_MESSAGE = 'You can ask what aircraft, helicopters, or jets are nearby, like "what aircraft are around?" or "what helicopters are nearby?" Or you can ask just about aircraft that are overhead, like: "what jets are overhead?"'
+const HELP_MESSAGE = 'You can ask what aircraft, helicopters, or jets are nearby, like "what aircraft are around?" or "what helicopters are nearby?"'
 const HELP_REPROMPT = 'What can I help you with?'
-const ERROR_MESSAGE = "Sorry, I couldn't fetch aircraft information. Please try again later."
+const ERROR_MESSAGE = "Sorry, I'm having trouble fetching aircraft information. Please try again in a minute."
 const NOTIFY_MISSING_PERMISSIONS = 'Please enable Device Address permissions for the Aircraft Radar skill, in the Amazon Alexa app.'
 const NO_ADDRESS = "It looks like you don't have an address set. Please set an address for this Echo, in the Amazon Alexa app."
 const LOCATION_FAILURE = 'There was an error finding your location. Please enable Device Address permissions for the Aircraft Radar skill, and set an address for this Echo, in the Amazon Alexa app.'
@@ -69,7 +69,7 @@ class GeocodeError extends Error {
 
   // eslint-disable-next-line class-methods-use-this
   ssmlMessage() {
-    return "Sorry, I couldn't pinpoint your location. Please verify that this Echo's address is set correctly, then try again."
+    return "Sorry, I couldn't pinpoint your location. Please verify that this Echo's address is set correctly in the Amazon Alexa app, then try again."
   }
 
 }
