@@ -68,7 +68,7 @@ class SentNoAddressMessageError extends Error {}
 class GeocodeError extends Error {
 
   // eslint-disable-next-line class-methods-use-this
-  ssmlMessage() {
+  get ssmlMessage() {
     return "Sorry, I couldn't pinpoint your location. Please verify that this Echo's address is set correctly in the Amazon Alexa app, then try again."
   }
 
@@ -434,9 +434,9 @@ function queryHandler(ctx, mode, typeFilter, title) {
     }
 
     if (err.ssmlMessage) {
-      ctx.response.speak(err.ssmlMessage())
+      ctx.response.speak(err.ssmlMessage)
     } else {
-      console.log('[Query Handler] Unhandled error in promise chain:', err)
+      console.log('[Query Handler] Error in promise chain:', err)
       ctx.response.speak(ERROR_MESSAGE)
     }
     ctx.emit(':responseReady')
