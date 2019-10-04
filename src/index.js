@@ -476,46 +476,46 @@ function queryContinuationHandler(ctx) {
 
 const handlers = {
   'LaunchRequest'() {
-    console.log('Handling LaunchRequest')
+    console.log('Handling LaunchRequest: ', JSON.stringify(this))
     this.emit('Nearby_Aircraft')
   },
   'SessionEndedRequest'() {
-    console.log('Received SessionEndedRequest')
+    console.log('Received SessionEndedRequest: ', JSON.stringify(this))
   },
   'Nearby_Aircraft'() {
-    console.log('Handling Nearby_Aircraft')
+    console.log('Handling Nearby_Aircraft request: ', JSON.stringify(this))
     queryHandler(this, Mode.Multi, TypeFilter.All, 'Nearby Aircraft')
   },
   'Nearest_Aircraft'() {
-    console.log('Handling Nearest_Aircraft')
+    console.log('Handling Nearest_Aircraft request: ', JSON.stringify(this))
     queryHandler(this, Mode.Single, TypeFilter.All, 'Nearby Aircraft')
   },
   'Nearest_Jet'() {
-    console.log('Handling Nearest_Jet')
+    console.log('Handling Nearest_Jet request: ', JSON.stringify(this))
     queryHandler(this, Mode.Single, TypeFilter.Jets, 'Nearby Jets')
   },
   'Nearby_Jets'() {
-    console.log('Handling Nearby_Jets')
+    console.log('Handling Nearby_Jets request: ', JSON.stringify(this))
     queryHandler(this, Mode.Multi, TypeFilter.Jets, 'Nearby Jets')
   },
   'Nearby_Helicopters'() {
-    console.log('Handling Nearby_Helicopters')
+    console.log('Handling Nearby_Helicopters request: ', JSON.stringify(this))
     queryHandler(this, Mode.Multi, TypeFilter.Helicopters, 'Nearby Helicopters')
   },
   'Nearest_Helicopter'() {
-    console.log('Handling Nearest_Helicopter')
+    console.log('Handling Nearest_Helicopter request: ', JSON.stringify(this))
     queryHandler(this, Mode.Single, TypeFilter.Helicopters, 'Nearby Helicopters')
   },
   'Nearby_Military'() {
-    console.log('Handling Nearby_Military')
+    console.log('Handling Nearby_Military request: ', JSON.stringify(this))
     queryHandler(this, Mode.Multi, TypeFilter.Military, 'Nearby Military Aircraft')
   },
   'AMAZON.NoIntent'() {
-    console.log('Handling AMAZON.NoIntent')
+    console.log('Handling AMAZON.NoIntent: ', JSON.stringify(this))
     this.emit(':responseReady')
   },
   'AMAZON.YesIntent'() {
-    console.log('Handling AMAZON.YesIntent')
+    console.log('Handling AMAZON.YesIntent: ', JSON.stringify(this))
     if (this.attributes['leftovers'] && this.attributes['leftovers'].length > 0) {
       queryContinuationHandler(this)
     } else {
@@ -523,16 +523,16 @@ const handlers = {
     }
   },
   'AMAZON.HelpIntent'() {
-    console.log('Handling AMAZON.HelpIntent')
+    console.log('Handling AMAZON.HelpIntent: ', JSON.stringify(this))
     this.response.speak(HELP_MESSAGE).listen(HELP_REPROMPT)
     this.emit(':responseReady')
   },
   'AMAZON.CancelIntent'() {
-    console.log('Handling AMAZON.CancelIntent')
+    console.log('Handling AMAZON.CancelIntent: ', JSON.stringify(this))
     this.emit(':responseReady')
   },
   'AMAZON.StopIntent'() {
-    console.log('Handling AMAZON.StopIntent')
+    console.log('Handling AMAZON.StopIntent: ', JSON.stringify(this))
     this.emit(':responseReady')
   },
 }
