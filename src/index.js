@@ -221,7 +221,7 @@ function singleAircraftOutput(response, ac, position, type) {
   // The nearest aircraft is a [model], Z miles A, at X feet, heading Y,
   // registration [reg], en route from [airport] to [airport] with [count] stops.
 
-  response.setThumbnailPromise(ADSB.thumbnailURL(ac))
+  // response.setThumbnailPromise(ADSB.thumbnailURL(ac))
 
   response.append(`The ${position} ${type} is`)
   response.space()
