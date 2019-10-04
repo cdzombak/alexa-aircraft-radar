@@ -40,6 +40,13 @@ const ManufacturerBlacklist = ['AVIONES COLOMBIA']
 
 class Aircraft {
 
+  static get API_DICT_KEYS() {
+    return [
+      'Alt', 'alt', 'GAlt', 'galt', 'Lat', 'lat', 'Long', 'lon', 'Call', 'call', 'From', 'from', 'To', 'to',
+      'Icao', 'icao', 'Mil', 'mil', 'Reg', 'reg', 'Trak', 'trak', 'Type', 'type', 'CallSus',
+    ]
+  }
+
   // Construct a new Aircraft instance based on the given API representation of an aircraft.
   //
   // The resulting instance works when given either a new or old style API response.
@@ -53,7 +60,13 @@ class Aircraft {
   }
 
   toJSON() {
-    return { apiDict: this._apiDict }
+    const apiDict = this._apiDict
+    Object.keys(this._apiDict).forEach((key) => {
+      if (Aircraft.API_DICT_KEYS.indexOf(key) === -1) {
+        delete apiDict[key]
+      }
+    })
+    return { apiDict }
   }
 
   _numberFromApiDict(key1, key2) {
