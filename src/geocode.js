@@ -39,6 +39,7 @@ exports.geocode = function geocode(addressStr) {
       'User-Agent': 'alexa-aircraft-radar',
     },
     json: 'true',
+    timeout: 2000,
   }
 
   console.time('geocodeRequest')

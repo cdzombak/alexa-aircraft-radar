@@ -94,6 +94,7 @@ exports.query = function query(location, acFilters, skyviewFilter) {
       'api-auth': process.env.ADSBX_API_KEY,
     },
     json: 'true',
+    timeout: 8000,
   }
 
   console.log('[ADSB] ADSBX request: ', url)
@@ -144,6 +145,7 @@ exports.thumbnailURL = function thumbnailURL(ac) {
       'User-Agent': 'alexa-aircraft-radar',
     },
     json: 'true',
+    timeout: 2000,
   }
 
   console.log('[ADSB] Image API request:', url)
