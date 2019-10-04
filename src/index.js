@@ -421,7 +421,7 @@ function queryHandler(ctx, mode, typeFilter, title) {
       if (leftovers && leftovers.length > 0) {
         response.setNeedsMore('Do you want to hear more?')
         ctx.attributes['addMilitaryDesc'] = addMilitaryDesc
-        ctx.attributes['leftovers'] = leftovers.slice(0, 8).map(ac => ac.toJSON())
+        ctx.attributes['leftovers'] = leftovers.map(ac => ac.toJSON())
         ctx.attributes['title'] = title
       }
     }
