@@ -17,8 +17,8 @@ const HELP_MESSAGE = 'You can ask what aircraft, helicopters, or jets are nearby
 const HELP_REPROMPT = 'What can I help you with?'
 const ERROR_MESSAGE = "Sorry, I'm having trouble fetching aircraft information. Please try again in a minute."
 const NOTIFY_MISSING_PERMISSIONS = 'Please enable Device Address permissions for the Aircraft Radar skill, in the Amazon Alexa app.'
-const NO_ADDRESS = "It looks like you don't have an address set. Please set an address for this Echo, in the Amazon Alexa app."
-const LOCATION_FAILURE = 'There was an error finding your location. Please enable Device Address permissions for the Aircraft Radar skill, and set an address for this Echo, in the Amazon Alexa app.'
+const NO_ADDRESS = "It looks like you don't have an address set. Please set an address for this Alexa device, in the Amazon Alexa app."
+const LOCATION_FAILURE = 'There was an error finding your location. Please enable Device Address permissions for the Aircraft Radar skill, and set an address for this Alexa device, in the Amazon Alexa app.'
 
 const MAX_NEARBY = 3
 const MAX_CONTINUE = 4

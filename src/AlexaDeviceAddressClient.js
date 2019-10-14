@@ -62,16 +62,23 @@ class AlexaDeviceAddressClient {
     Https.get(requestOptions, (response) => {
       console.log('[AlexaDeviceAddressClient] Device Address API responded with status code: ', response.statusCode)
 
-      response.on('data', (data) => {
-        const responsePayloadObject = JSON.parse(data)
-
+      if (response.statusCode === 204) {
+        // no data means on('data') will never happen
         const deviceAddressResponse = {
           statusCode: response.statusCode,
-          address: responsePayloadObject,
+          address: null,
         }
-
         fulfill(deviceAddressResponse)
-      })
+      } else {
+        response.on('data', (data) => {
+          const responsePayloadObject = JSON.parse(data)
+          const deviceAddressResponse = {
+            statusCode: response.statusCode,
+            address: responsePayloadObject,
+          }
+          fulfill(deviceAddressResponse)
+        })
+      }
     }).on('error', (e) => {
       console.error(e)
       reject()
