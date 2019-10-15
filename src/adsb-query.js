@@ -83,7 +83,7 @@ function aircraftFilter(acFilters) {
 
 exports.query = function query(location, acFilters, skyviewFilter) {
   // 40km = 21.5983nm
-  const url = `https://adsbexchange.com/api/aircraft/json/lat/${location.latitude}/lon/${location.longitude}/dist/21/`
+  const url = `https://adsbexchange.com/api/aircraft/json/lat/${location.latitude}/lon/${location.longitude}/dist/22/`
   const reqOptions = {
     url,
     method: 'GET',
