@@ -94,7 +94,7 @@ exports.query = function query(location, acFilters, skyviewFilter) {
       'api-auth': process.env.ADSBX_API_KEY,
     },
     json: 'true',
-    timeout: 8000,
+    timeout: 7000,
   }
 
   console.log('[ADSB] ADSBX request: ', url)
