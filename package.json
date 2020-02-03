@@ -19,7 +19,7 @@
     "lambda-local": "^1.6.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run mock-nearby-aircraft",
     "lint": "./node_modules/.bin/eslint --fix src/**/*.js",
     "package": "npm run lint && scripts/package.sh",
     "deploy": "npm run clean && npm run package && scripts/deploy.sh",
