@@ -10,17 +10,17 @@ This top-level README covers technical topics relevant to development of the ski
 
 ## Requirements
 
-### Node v8
+### Node v12
 
-This is a standard Node application which requires Node v8. It might work with newer Node versions, but AWS Lambda uses v8.
+This is a standard Node application which requires Node v12. It should work with newer Node versions and versions as old as 8, but it's currently deployed with v12.
 
 On macOS,
 ```shell script
 brew tap homebrew/cask-versions
-brew install node@8
+brew install node@12
 
 # then, in your shell:
-export PATH="/usr/local/opt/node@8/bin:$PATH"
+export PATH="/usr/local/opt/node@12/bin:$PATH"
 ```
 
 ### AWS Lambda
