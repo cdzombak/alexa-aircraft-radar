@@ -15,8 +15,10 @@ if [ "$2" == "--valid-location" ]; then
     LOC="valid"
 elif [ "$2" == "--invalid-location" ]; then
     LOC="invalid"
+elif [ "$2" == "--az-test-location" ]; then
+    LOC="az_test"
 else
-    echo -e "${RED}[Error]${NC} pass ${ORANGE}--[in]valid-location${NC}.\n"
+    echo -e "${RED}[Error]${NC} pass ${ORANGE}--[valid|invalid|az-test]-location${NC}.\n"
     exit 2
 fi
 

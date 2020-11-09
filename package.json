@@ -35,6 +35,7 @@
     "mock-nearby-jets": "scripts/mock-event.sh Nearby_Jets --valid-location",
     "mock-nearby-military": "scripts/mock-event.sh Nearby_Military --valid-location",
     "mock-invalid-location": "scripts/mock-event.sh Nearby_Aircraft --invalid-location",
+    "mock-az-test-location": "scripts/mock-event.sh Nearby_Aircraft --az-test-location",
     "mock-yes-more": "scripts/mock-event.sh Yes_More --valid-location",
     "mock-no-more": "scripts/mock-event.sh No_More --valid-location"
   },

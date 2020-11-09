@@ -313,7 +313,7 @@ function getDeviceLocation(ctx) {
   const consentToken = permissions ? permissions.consentToken : null
 
   // allow requesting a mock location with request.cdz_mockLocation in the JSON input payload
-  // or via the MOCK_LOCATION environment var. may be set to either 'valid' or 'invalid'.
+  // or via the MOCK_LOCATION environment var. may be set to either 'valid', 'az_test', or 'invalid'.
   // if both are set, the value from the JSON payload takes priority.
   // either bypasses the device location process.
   const requestMockLocation = ('cdz_mockLocation' in ctx.event.request) ? ctx.event.request.cdz_mockLocation : undefined
@@ -327,15 +327,17 @@ function getDeviceLocation(ctx) {
     return Promise.reject(new SentPermissionsCardError())
   }
 
-  let address = {}
+  let deviceAddr = {}
 
   if (envMockLocation || requestMockLocation) {
     const MockLocations = require('./mock-locations') // eslint-disable-line global-require
     const mockLocation = requestMockLocation ? requestMockLocation : envMockLocation
     if (mockLocation === 'invalid') {
-      address = Promise.resolve(MockLocations.INVALID_LOCATION)
+      deviceAddr = Promise.resolve(MockLocations.INVALID_LOCATION)
+    } else if (mockLocation === 'az_test') {
+      deviceAddr = Promise.resolve(MockLocations.AZTEST_LOCATION)
     } else {
-      address = Promise.resolve(MockLocations.VALID_LOCATION)
+      deviceAddr = Promise.resolve(MockLocations.VALID_LOCATION)
     }
   } else {
     const deviceId = ctx.event.context.System.device.deviceId
@@ -343,7 +345,7 @@ function getDeviceLocation(ctx) {
     const alexaDeviceAddressClient = new AlexaDeviceAddressClient(apiEndpoint, deviceId, consentToken)
 
     console.time('getDeviceAddress')
-    address = alexaDeviceAddressClient.getFullAddress().then((addressResponse) => {
+    deviceAddr = alexaDeviceAddressClient.getFullAddress().then((addressResponse) => {
       console.timeEnd('getDeviceAddress')
       switch (addressResponse.statusCode) {
       case 200:
@@ -365,8 +367,11 @@ function getDeviceLocation(ctx) {
     })
   }
 
-  return address.then((address) => {
+  let deviceAddressResolved = null
+
+  return deviceAddr.then((address) => {
     console.log('[Address] Got address:', address)
+    deviceAddressResolved = address
     let addressStr = ''
     const keys = ['addressLine1', 'addressLine2', 'addressLine3', 'city', 'districtOrCounty', 'stateOrRegion', 'postalCode', 'countryCode']
     keys.forEach((key) => {
@@ -375,6 +380,24 @@ function getDeviceLocation(ctx) {
       }
     })
     return GeocodeService.geocode(addressStr)
+  }).catch((err) => {
+    if (deviceAddressResolved === null) {
+      throw err
+    }
+    // Amazon is testing from addresses like `A2Z DEVELOPMENT CENTER, 40 PACIFICA, IRVINE, CA, 92618-7471, US,`
+    // which Google can't parse. If we have two address lines, try removing the first:
+    if (deviceAddressResolved['addressLine1'] && deviceAddressResolved['addressLine2']) {
+      console.log('[Address][verbose] discarding address line 1 and trying again')
+      let addressStr = ''
+      const keys = ['addressLine2', 'addressLine3', 'city', 'districtOrCounty', 'stateOrRegion', 'postalCode', 'countryCode']
+      keys.forEach((key) => {
+        if (deviceAddressResolved[key]) {
+          addressStr += `${deviceAddressResolved[key]}, `
+        }
+      })
+      return GeocodeService.geocode(addressStr)
+    }
+    throw err
   })
 }
 
