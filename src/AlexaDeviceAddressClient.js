@@ -71,6 +71,7 @@ class AlexaDeviceAddressClient {
         fulfill(deviceAddressResponse)
       } else {
         response.on('data', (data) => {
+          console.log('[AlexaDeviceAddressClient] Device Address API responded with raw data: ', data)
           const responsePayloadObject = JSON.parse(data)
           const deviceAddressResponse = {
             statusCode: response.statusCode,
