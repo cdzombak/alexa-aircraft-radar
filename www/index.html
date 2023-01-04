@@ -13,6 +13,15 @@
   <div class="container main-page">
   <div class="row">
     <div class="col-sm-10 col-sm-push-2">
+      <div class="alert alert-warning">
+        <p><strong>The Aircraft Radar skill is no longer available.</strong></p>
+        <p>ADS-B Exchange, who previously enthusiastically supported this project, have removed the API this skill used to fetch live aircraft traffic, and they have not replied to multiple attempts to contact them.</p>
+        <p>It’s possible the skill will come back one day, if and when I have time to migrate it to another data source API. The <a href="https://opensky-network.org">OpenSky Network</a> is the most likely alternative. Achieving feature parity with the ADS-B Exchange version of the skill would, however, likely require integrating with some other data source for airline and flight information, adding to the research and time required to migrate to a new data source.</p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-10 col-sm-push-2">
       <h1>Aircraft Radar skill for Amazon Alexa</h1>
       <blockquote class="main-quote">“Alexa, ask Aircraft Radar what’s nearby.”</blockquote>
 
@@ -52,18 +61,18 @@
 
       <h2>Data &amp; Accuracy</h2>
 
-      <p>Data from <a href="http://www.adsbexchange.com/">ADS-B Exchange</a> makes this skill possible.
-        <strong>Please consider <a href="https://www.adsbexchange.com/donate/">donating to ADS-B Exchange</a></strong> if you enjoy Aircraft Radar.</p>
+      <p><del>Data from ADS-B Exchange makes this skill possible.
+        <strong>Please consider donating to ADS-B Exchange</strong> if you enjoy Aircraft Radar.</del></p>
 
       <p>Be aware that not all airplanes transmit ADS-B data just yet, and not all geographical areas have a volunteer receiving
-        ADS-B radio transmissions from nearby aircraft. Consider <a href="https://www.adsbexchange.com/how-to-feed/">running your own receiver and
-        feeding the results to ADS-B Exchange</a> if you want to help improve this skill in your geographical area.</p>
+        ADS-B radio transmissions from nearby aircraft. Consider running your own receiver and
+        feeding the results to <del>ADS-B Exchange</del> if you want to help improve this skill in your geographical area.</p>
 
       <h2>Support/Donate</h2>
 
       <p>In addition to the time required for maintenance and improvements to this software, I pay for a
         small <a href="https://www.digitalocean.com">DigitalOcean</a> server, which provides a critical caching layer for
-        the <a href="https://www.amazon.com/dp/B075XC9L9H/">Aircraft Radar</a> skill. I also send a monthly payment to ADS-B Exchange.</p>
+        the <a href="https://www.amazon.com/dp/B075XC9L9H/">Aircraft Radar</a> skill. <del>I also send a monthly payment to ADS-B Exchange.</del></p>
 
       <p>Please donate whatever you’d like toward these costs:</p>
       <ul>
