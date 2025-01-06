@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "eslint": "^6.4.0",
-    "lambda-local": "^1.6.1"
+    "lambda-local": "^2.2.0"
   },
   "scripts": {
     "test": "npm run mock-nearby-aircraft",
